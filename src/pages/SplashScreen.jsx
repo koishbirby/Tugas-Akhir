@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import BackgroundPattern from '../components/splash/BackgroundPattern';
 import FloatingElements from '../components/splash/FloatingElements';
 import LogoContainer from '../components/splash/LogoContainer';
-import TitleSection from '../components/splash/TitleSection';
 import Footer from '../components/splash/Footer';
 
 export default function SplashScreen({ onComplete }) {
