@@ -11,20 +11,20 @@ export default function DesktopNavbar({ currentPage, onNavigate, onCreateRecipe 
   ];
 
   return (
-    <nav className="hidden md:block shadow-lg border-b border-blue-100 sticky top-0 z-50 backdrop-blur-sm bg-orange-500/95">
+    <nav className="hidden md:block shadow-lg border-b border-white/10 sticky top-0 z-50 backdrop-blur-md bg-orange-500/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           
           {/* Logo */}
-          {/* <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-4">
             <div className="relative group">
               <img
                 src={logoUrl}
                 alt="Resep Nusantara Logo"
                 className="w-12 h-12 object-contain filter drop-shadow-md transform transition-transform duration-300 group-hover:scale-110"
-              /> */}
+              />
               {/* Decorative particles */}
-              {/* <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-blue-400 rounded-full animate-ping opacity-60" />
+              <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-blue-400 rounded-full animate-ping opacity-60" />
               <div className="absolute -bottom-0.5 -left-0.5 w-1 h-1 bg-blue-300 rounded-full animate-ping opacity-50" style={{ animationDelay: '300ms' }} />
             </div>
             <div>
@@ -35,7 +35,7 @@ export default function DesktopNavbar({ currentPage, onNavigate, onCreateRecipe 
                 Nusantara
               </h2>
             </div>
-          </div> */}
+          </div>
 
           {/* Navigation Links */}
           <div className="flex items-center space-x-10">

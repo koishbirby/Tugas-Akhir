@@ -33,7 +33,7 @@ export default function HomePage({ onRecipeClick, onNavigate }) {
   return (
     <div className="min-h-screen bg-black">
 
-      <RevealAnimation />
+      {/* <RevealAnimation /> */}
 
       <HeroSection />
       
