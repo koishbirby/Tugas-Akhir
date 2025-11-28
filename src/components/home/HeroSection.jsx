@@ -133,8 +133,59 @@ export default function HeroSection() {
               🎃 Halloween Countdown: {countdown}
             </h1>
 
+            {/* Featured Myth Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-6">
+
+              {/* Card 1 */}
+              <motion.div
+                initial={{ opacity: 0, y: -40 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, ease: "easeOut" }}
+                className="bg-black/40 backdrop-blur-xl border border-white/20 rounded-2xl p-6 shadow-xl max-w-sm"
+              >
+                <img 
+                  src="https://images.unsplash.com/photo-1485745631157-311b6f1f6e1c"
+                  className="w-full h-48 object-cover rounded-xl mb-4"
+                />
+                <h2 className="text-xl font-bold text-white mb-2">The Headless Horseman</h2>
+                <p className="text-blue-200 text-sm mb-2">Global Myth</p>
+              </motion.div>
+
+              {/* Card 2 */}
+              <motion.div
+                initial={{ opacity: 0, y: -50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.9, ease: "easeOut" }}
+                className="bg-black/40 backdrop-blur-xl border border-white/20 rounded-2xl p-6 shadow-xl max-w-sm"
+              >
+                <img 
+                  src="https://images.unsplash.com/photo-1489657780376-e0d8630c2f76"
+                  className="w-full h-48 object-cover rounded-xl mb-4"
+                />
+                <h2 className="text-xl font-bold text-white mb-2">The Banshee</h2>
+                <p className="text-blue-200 text-sm mb-2">Irish Folklore</p>
+              </motion.div>
+
+              {/* Card 3 */}
+              <motion.div
+                initial={{ opacity: 0, y: -60 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1.1, ease: "easeOut" }}
+                className="bg-black/40 backdrop-blur-xl border border-white/20 rounded-2xl p-6 shadow-xl max-w-sm"
+              >
+                <img 
+                  src="https://images.unsplash.com/photo-1593113830409-1b4c1b945cbb"
+                  className="w-full h-48 object-cover rounded-xl mb-4"
+                />
+                <h2 className="text-xl font-bold text-white mb-2">The Wendigo</h2>
+                <p className="text-blue-200 text-sm mb-2">North American Legend</p>
+              </motion.div>
+
+            </div>
+
+
             {/* Featured Myth Card */}
-            <motion.div
+            {/* <motion.div
               initial={{ opacity: 0, y: -40 }} 
               animate={{ opacity: 1, y: 0 }} 
               transition={{ duration: 0.8, ease: "easeOut" }}
@@ -144,10 +195,10 @@ export default function HeroSection() {
               <img 
                 src="https://images.unsplash.com/photo-1485745631157-311b6f1f6e1c"
                 alt="Featured Myth"
-                className="w-full h-85 object-cover rounded-2xl mb-6"
+                className="w-full h-100 object-cover rounded-2xl mb-6"
               />
 
-              <h2 className="text-4xl font-bold text-white mb-3">The Headless Horseman</h2>
+              <h2 className="text-2xl font-bold text-white mb-3">The Headless Horseman</h2>
               {/* <p className="text-blue-200 text-lg mb-4">Featured Global Myth of the Month</p>
 
               <p className="text-slate-200 text-base leading-relaxed">
@@ -155,7 +206,7 @@ export default function HeroSection() {
                 a head, searching endlessly for the one who took it. A classic tale that
                 appears in various forms throughout Europe and America.
               </p> */}
-            </motion.div>
+            {/* </motion.div> */}
           </div>
         </div>
       </div>
