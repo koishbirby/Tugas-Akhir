@@ -128,20 +128,13 @@ export default function HeroSection() {
           {/* Left Content */}
           <div className="text-center lg:text-left">
             <div className="mb-10">
-              <h2 className="text-5xl lg:text-6xl font-medium text-slate-800 mb-4">
-                Selamat datang di
-              </h2>
               <div className="relative inline-block mb-8">
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-400 via-blue-300 to-blue-200 transform -skew-y-1 rounded-xl opacity-80"></div>
                 <h1 className="relative text-5xl lg:text-6xl font-semibold text-slate-800 px-6 py-3 whitespace-nowrap">
-                  Resep Nusantara
+                  The Season of Halloween is Upon Us All!
                 </h1>
               </div>
-              <p className="text-2xl text-slate-600 mb-8">Warisan Kuliner Indonesia</p>
-              <p className="text-xl font-semibold text-orange-400 drop-shadow mb-6">🎃 Halloween Countdown: {countdown}</p>
-              <p className="text-lg text-slate-500 max-w-lg leading-relaxed">
-                Temukan ribuan resep autentik dari seluruh Nusantara. Dari masakan tradisional hingga kreasi modern yang menggugah selera.
-              </p>
+              <h2 className="text-xl font-semibold text-orange-400 drop-shadow mb-6">🎃 Halloween Countdown: {countdown}</h2>
             </div>
 
             {/* Action Buttons */}
