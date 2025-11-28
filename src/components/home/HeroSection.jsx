@@ -1,7 +1,7 @@
 // src/components/home/HeroSection.jsx
 import { useState, useEffect } from "react";
 import { ChefHat, Play, ArrowRight } from 'lucide-react';
-
+import { motion } from "framer-motion";
 
 export default function HeroSection() {
   const [countdown, setCountdown] = useState("");
@@ -134,7 +134,13 @@ export default function HeroSection() {
             </h1>
 
             {/* Featured Myth Card */}
-            <div className="bg-black/40 backdrop-blur-xl border border-white/20 rounded-3xl p-10 shadow-2xl max-w-lg">
+            <motion.div
+              initial={{ opacity: 0, y: -40 }} 
+              animate={{ opacity: 1, y: 0 }} 
+              transition={{ duration: 0.9, ease: "easeOut" }}
+              className="bg-black/40 backdrop-blur-xl border border-white/20 rounded-3xl p-10 shadow-2xl max-w-lg"
+            >
+
               <img 
                 src="https://images.unsplash.com/photo-1485745631157-311b6f1f6e1c"
                 alt="Featured Myth"
@@ -149,7 +155,7 @@ export default function HeroSection() {
                 a head, searching endlessly for the one who took it. A classic tale that
                 appears in various forms throughout Europe and America.
               </p>
-            </div>
+            </motion.div>
           </div>
         </div>
       </div>
