@@ -1,30 +1,30 @@
 // src/components/DesktopNavbar.jsx
-import { Plus } from 'lucide-react';
+import { Plus, Home, Utensils, Coffee, User } from 'lucide-react';
 import logoUrl from '../../assets/LOGORN.png';
 
 export default function DesktopNavbar({ currentPage, onNavigate, onCreateRecipe }) {
   const navItems = [
-    { id: 'home', label: 'Beranda' },
-    { id: 'makanan', label: 'Makanan' },
-    { id: 'minuman', label: 'Minuman' },
-    { id: 'profile', label: 'Profile' }
+    { id: 'home', icon: <Home size={22} /> },
+    { id: 'makanan', icon: <Utensils size={22} /> },
+    { id: 'minuman', icon: <Coffee size={22} /> },
+    { id: 'profile', icon: <User size={22} /> }
   ];
 
   return (
-    <nav className="hidden md:block shadow-lg border-b border-blue-100 sticky top-0 z-50 backdrop-blur-sm bg-white/95">
+    <nav className="hidden md:block shadow-lg border-b border-blue-100 sticky top-0 z-50 backdrop-blur-sm bg-orange-500/95">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           
           {/* Logo */}
-          <div className="flex items-center space-x-4">
+          {/* <div className="flex items-center space-x-4">
             <div className="relative group">
               <img
                 src={logoUrl}
                 alt="Resep Nusantara Logo"
                 className="w-12 h-12 object-contain filter drop-shadow-md transform transition-transform duration-300 group-hover:scale-110"
-              />
+              /> */}
               {/* Decorative particles */}
-              <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-blue-400 rounded-full animate-ping opacity-60" />
+              {/* <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-blue-400 rounded-full animate-ping opacity-60" />
               <div className="absolute -bottom-0.5 -left-0.5 w-1 h-1 bg-blue-300 rounded-full animate-ping opacity-50" style={{ animationDelay: '300ms' }} />
             </div>
             <div>
@@ -35,22 +35,34 @@ export default function DesktopNavbar({ currentPage, onNavigate, onCreateRecipe 
                 Nusantara
               </h2>
             </div>
-          </div>
+          </div> */}
 
           {/* Navigation Links */}
           <div className="flex items-center space-x-10">
             {navItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => onNavigate(item.id)}
-                className={`px-4 py-3 text-base font-medium transition-all duration-200 border-b-2 ${
-                  currentPage === item.id
-                    ? 'text-blue-600 border-blue-500'
-                    : 'text-slate-600 border-transparent hover:text-blue-500 hover:border-blue-300'
-                }`}
-              >
-                {item.label}
-              </button>
+                <button
+                  key={item.id}
+                  onClick={() => onNavigate(item.id)}
+                  className={`px-4 py-3 text-base font-medium flex items-center justify-center transition-all duration-200 border-b-2 ${
+                    currentPage === item.id
+                      ? 'text-blue-600 border-blue-500'
+                      : 'text-slate-600 border-transparent hover:text-blue-500 hover:border-blue-300'
+                  }`}
+                >
+                  {item.icon}
+                </button>
+
+              // <button
+              //   key={item.id}
+              //   onClick={() => onNavigate(item.id)}
+              //   className={`px-4 py-3 text-base font-medium flex items-center justify-center transition-all duration-200 border-b-2 ${
+              //     currentPage === item.id
+              //       ? 'text-blue-600 border-blue-500'
+              //       : 'text-slate-600 border-transparent hover:text-blue-500 hover:border-blue-300'
+              //   }`}
+              // >
+              //   {item.label}
+              // </button>
             ))}
             
             {/* Buat Resep Button */}

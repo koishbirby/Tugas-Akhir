@@ -31,13 +31,16 @@ export default function HomePage({ onRecipeClick, onNavigate }) {
   });
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="relative min-h-screen bg-black">
+
+      <img src="https://64.media.tumblr.com/45ee51c4f5844ded68c54ab9be6974bd/ccb00881f00f4107-1b/s500x750/8d5e6c2232724e113fa15f3817b3bc48b1c9a0c5.pnj" className="absolute top-4 left-4 w-36 opacity-70" />
+      <img src="https://64.media.tumblr.com/45ee51c4f5844ded68c54ab9be6974bd/ccb00881f00f4107-1b/s500x750/8d5e6c2232724e113fa15f3817b3bc48b1c9a0c5.pnj" className="absolute top-4 right-4 w-36 opacity-70" />
 
       <RevealAnimation />
 
       <HeroSection />
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-16">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-16">
         {/* Featured Makanan Section */}
         <FeaturedMakananSection
           recipes={featuredMakanan}
