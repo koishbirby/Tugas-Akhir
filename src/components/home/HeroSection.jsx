@@ -141,7 +141,7 @@ export default function HeroSection() {
                 initial={{ opacity: 0, y: -40 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7, ease: "easeOut" }}
-                className="bg-black/40 backdrop-blur-xl border border-white/20 rounded-2xl p-6 shadow-xl w-[260px] h-[380px]"
+                className="bg-black/40 backdrop-blur-xl border border-white/20 rounded-2xl p-6 shadow-xl w-[260px] h-[500px]"
 
               >
                 <img 
@@ -157,7 +157,7 @@ export default function HeroSection() {
                 initial={{ opacity: 0, y: -50 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.9, ease: "easeOut" }}
-                className="bg-black/40 backdrop-blur-xl border border-white/20 rounded-2xl p-6 shadow-xl w-[260px] h-[380px]"
+                className="bg-black/40 backdrop-blur-xl border border-white/20 rounded-2xl p-6 shadow-xl w-[260px] h-[500px]"
 
               >
                 <img 
@@ -173,7 +173,7 @@ export default function HeroSection() {
                 initial={{ opacity: 0, y: -60 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1.1, ease: "easeOut" }}
-                className="bg-black/40 backdrop-blur-xl border border-white/20 rounded-2xl p-6 shadow-xl w-[260px] h-[380px]"
+                className="bg-black/40 backdrop-blur-xl border border-white/20 rounded-2xl p-6 shadow-xl w-[260px] h-[500px]"
 
               >
                 <img 
