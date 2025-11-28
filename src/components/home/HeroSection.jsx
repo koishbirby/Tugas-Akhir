@@ -109,8 +109,8 @@ export default function HeroSection() {
           </div>
         </div>
 
-        {/* Action Buttons (Mobile) */}
-        <div className="flex flex-col space-y-3 max-w-xs mx-auto md:hidden">
+        {/* Action Buttons */}
+        <div className="flex flex-col space-y-3 max-w-xs mx-auto">
           <button className="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-6 py-3 rounded-2xl font-semibold shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 flex items-center justify-center space-x-2 text-sm">
             <ChefHat className="w-4 h-4" />
             <span>Jelajahi Resep</span>
@@ -120,48 +120,42 @@ export default function HeroSection() {
             <span>Video Tutorial</span>
           </button>
         </div>
+      </div>
 
-        {/* Desktop Section */}
-        <div className="hidden md:block relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-
-            {/* Left Content */}
-            <div className="flex flex-col items-center lg:items-start text-center lg:text-left">
-              
-              {/* Headings */}
-              <div className="mb-16 lg:mb-20">
-                <div className="relative inline-block mb-8">
-                  <h1 className="text-5xl lg:text-6xl font-semibold text-slate-800 px-6 py-3 whitespace-nowrap shadow-xl shadow-blue-300/50 rounded-xl">
-                    Beneath the grave,
-                  </h1>
-                  <h2 className="text-5xl lg:text-6xl font-semibold text-slate-800 px-6 py-3 whitespace-nowrap shadow-xl shadow-blue-300/50 rounded-xl">
-                    Lies blood-curdling regrets that haunt us.
-                  </h2>
-                </div>
-
-                <h1 className="text-xl font-semibold text-orange-400 drop-shadow mb-6">
-                  {countdown}
+      <div className="hidden md:block relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div className="grid grid-cols-1 gap-16 items-center">
+          
+          {/* Left Content */}
+          <div className="text-center lg:text-left">
+            <div className="mb-16 lg:mb-20">
+              <div className="relative inline-block mb-8">
+                <h1 className="text-5xl lg:text-6xl font-semibold text-slate-800 px-6 py-3 whitespace-nowrap shadow-xl shadow-blue-300/50 rounded-xl">
+                  Beneath the grave,
                 </h1>
+                <h2 className="text-5xl lg:text-6xl font-semibold text-slate-800 px-6 py-3 whitespace-nowrap shadow-xl shadow-blue-300/50 rounded-xl"> 
+                  Lies blood-curdling regrets that haunt us.
+                </h2>
+                
+
               </div>
 
-              {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row gap-6 justify-center lg:justify-start">
-                <button className="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-10 py-5 rounded-2xl font-semibold shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 flex items-center justify-center space-x-3 text-lg">
-                  <ChefHat className="w-6 h-6" />
-                  <span>Jelajahi Resep</span>
-                  <ArrowRight className="w-5 h-5" />
-                </button>
+              <h1 className="text-xl font-semibold text-orange-400 drop-shadow mb-6">{countdown}</h1>
+            </div>
 
-                <button className="bg-white/25 backdrop-blur-xl border border-white/40 text-slate-700 px-10 py-5 rounded-2xl font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 flex items-center justify-center space-x-3 text-lg">
-                  <Play className="w-6 h-6" />
-                  <span>Video Tutorial</span>
-                </button>
-              </div>
-
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row gap-6 justify-center lg:justify-start">
+              <button className="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-10 py-5 rounded-2xl font-semibold shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 flex items-center justify-center space-x-3 text-lg">
+                <ChefHat className="w-6 h-6" />
+                <span>Jelajahi Resep</span>
+                <ArrowRight className="w-5 h-5" />
+              </button>
+              <button className="bg-white/25 backdrop-blur-xl border border-white/40 text-slate-700 px-10 py-5 rounded-2xl font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 flex items-center justify-center space-x-3 text-lg">
+                <Play className="w-6 h-6" />
+                <span>Video Tutorial</span>
+              </button>
             </div>
           </div>
         </div>
-
       </div>
     </section>
   );
