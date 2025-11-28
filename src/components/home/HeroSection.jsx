@@ -137,14 +137,14 @@ export default function HeroSection() {
             <motion.div
               initial={{ opacity: 0, y: -40 }} 
               animate={{ opacity: 1, y: 0 }} 
-              transition={{ duration: 0.3, ease: "easeOut" }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
               className="bg-black/40 backdrop-blur-xl border border-white/20 rounded-3xl p-10 shadow-2xl max-w-lg"
             >
 
               <img 
                 src="https://images.unsplash.com/photo-1485745631157-311b6f1f6e1c"
                 alt="Featured Myth"
-                className="w-full h-60 object-cover rounded-2xl mb-6"
+                className="w-full h-200 object-cover rounded-2xl mb-6"
               />
 
               <h2 className="text-4xl font-bold text-white mb-3">The Headless Horseman</h2>
