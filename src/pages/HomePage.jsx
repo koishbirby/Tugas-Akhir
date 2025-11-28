@@ -43,7 +43,7 @@ export default function HomePage({ onRecipeClick, onNavigate }) {
         className="absolute top-4 right-4 w-36 opacity-70 pointer-events-none select-none"
       />
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-xl mx-auto px-4 sm:px-6 lg:px-8">
         <RevealAnimation />
         <HeroSection />
         
