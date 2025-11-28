@@ -1,7 +1,40 @@
 // src/components/home/HeroSection.jsx
+import { useState, useEffect } from "react";
 import { ChefHat, Play, ArrowRight } from 'lucide-react';
 
+
 export default function HeroSection() {
+    
+  const [countdown, setCountdown] = useState("");
+
+  useEffect(() => {
+    function updateCountdown() {
+      const now = new Date();
+      const currentYear = now.getFullYear();
+
+      // Halloween date for this year
+      const halloween = new Date(`${currentYear}-10-31T00:00:00`);
+
+      // If Halloween has passed, count down to next year's Halloween
+      if (now > halloween) {
+        halloween.setFullYear(currentYear + 1);
+      }
+
+      const diff = halloween - now;
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+
+      setCountdown(`${days}d ${hours}h ${minutes}m ${seconds}s`);
+    }
+
+    updateCountdown();
+    const interval = setInterval(updateCountdown, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+  
   return (
     <section className="relative overflow-hidden min-h-screen md:min-h-[85vh] flex items-center">
       {/* FULL BACKGROUND IMAGE */}
@@ -12,8 +45,8 @@ export default function HeroSection() {
           className="w-full h-full object-cover"
         />
         
-        {/* FADE TO WHITE GRADIENT */}
-        <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-white/60 to-white"></div>
+        {/* FADE GRADIENT */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/5 via-black/25 to-black"></div>
       </div>
         
       <div className="absolute top-20 left-10 w-40 h-40 bg-gradient-to-r from-blue-400/20 to-indigo-400/20 rounded-full blur-3xl animate-pulse" />
@@ -37,6 +70,7 @@ export default function HeroSection() {
           <p className="text-slate-500 text-sm max-w-xs mx-auto leading-relaxed">
             Temukan ribuan resep autentik dari seluruh Nusantara. Dari masakan tradisional hingga kreasi modern.
           </p>
+          <p className="text-xl font-semibold text-orange-400 drop-shadow mb-6">🎃 Halloween Countdown: {countdown}</p>
         </div>
 
         <div className="mb-8 max-w-xs mx-auto">
