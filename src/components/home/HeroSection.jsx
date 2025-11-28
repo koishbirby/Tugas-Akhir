@@ -137,7 +137,7 @@ export default function HeroSection() {
             <motion.div
               initial={{ opacity: 0, y: -40 }} 
               animate={{ opacity: 1, y: 0 }} 
-              transition={{ duration: 0.9, ease: "easeOut" }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
               className="bg-black/40 backdrop-blur-xl border border-white/20 rounded-3xl p-10 shadow-2xl max-w-lg"
             >
 
@@ -148,13 +148,13 @@ export default function HeroSection() {
               />
 
               <h2 className="text-4xl font-bold text-white mb-3">The Headless Horseman</h2>
-              <p className="text-blue-200 text-lg mb-4">Featured Global Myth of the Month</p>
+              {/* <p className="text-blue-200 text-lg mb-4">Featured Global Myth of the Month</p>
 
               <p className="text-slate-200 text-base leading-relaxed">
                 A legendary apparition known for riding through fog-covered lands without
                 a head, searching endlessly for the one who took it. A classic tale that
                 appears in various forms throughout Europe and America.
-              </p>
+              </p> */}
             </motion.div>
           </div>
         </div>
