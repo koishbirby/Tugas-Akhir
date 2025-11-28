@@ -45,7 +45,7 @@ export default function HeroSection() {
         />
         
         {/* FADE GRADIENT */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/5 via-black/75 to-black"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/5 via-black/25 to-black"></div>
       </div>
         
       <div className="absolute top-20 left-10 w-40 h-40 bg-gradient-to-r from-blue-400/20 to-indigo-400/20 rounded-full blur-3xl animate-pulse" />
@@ -127,11 +127,12 @@ export default function HeroSection() {
           
           {/* Left Content */}
           <div className="text-center lg:text-left">
-            <div className="mb-10">
+            <div className="mb-16 lg:mb-20">
               <div className="relative inline-block mb-8">
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-400 via-blue-300 to-blue-200 transform -skew-y-1 rounded-xl opacity-80"></div>
                 <h1 className="relative text-5xl lg:text-6xl font-semibold text-slate-800 px-6 py-3 whitespace-nowrap">
-                  The Season of Halloween is Upon Us All!
+                  The Season of Halloween 
+                  is Upon Us All!
                 </h1>
               </div>
               <h2 className="text-xl font-semibold text-orange-400 drop-shadow mb-6">🎃 Halloween Countdown: {countdown}</h2>
