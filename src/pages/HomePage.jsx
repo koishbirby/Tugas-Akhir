@@ -31,41 +31,30 @@ export default function HomePage({ onRecipeClick, onNavigate }) {
   });
 
   return (
-    <div className="relative min-h-screen bg-black overflow-x-hidden">
+    <div className="min-h-screen bg-black">
 
-      {/* Corner Decorations */}
-      <img 
-        src="https://64.media.tumblr.com/45ee51c4f5844ded68c54ab9be6974bd/ccb00881f00f4107-1b/s500x750/8d5e6c2232724e113fa15f3817b3bc48b1c9a0c5.pnj" 
-        className="absolute top-0 left-0 h-full object-cover opacity-70 pointer-events-none select-none"
-      />
-      <img 
-        src="https://64.media.tumblr.com/45ee51c4f5844ded68c54ab9be6974bd/ccb00881f00f4107-1b/s500x750/8d5e6c2232724e113fa15f3817b3bc48b1c9a0c5.pnj" 
-        className="absolute top-0 right-0 h-full object-cover opacity-70 pointer-events-none select-none"
-      />
+      <RevealAnimation />
 
-      <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
-        <RevealAnimation />
-        <HeroSection />
-        
-        <div className="py-12 space-y-16">
-          {/* Featured Makanan Section */}
-          <FeaturedMakananSection
-            recipes={featuredMakanan}
-            loading={loadingMakanan}
-            error={errorMakanan}
-            onRecipeClick={onRecipeClick}
-            onNavigate={onNavigate}
-          />
+      <HeroSection />
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-16">
+        {/* Featured Makanan Section */}
+        <FeaturedMakananSection
+          recipes={featuredMakanan}
+          loading={loadingMakanan}
+          error={errorMakanan}
+          onRecipeClick={onRecipeClick}
+          onNavigate={onNavigate}
+        />
 
-          {/* Featured Minuman Section */}
-          <FeaturedMinumanSection
-            recipes={featuredMinuman}
-            loading={loadingMinuman}
-            error={errorMinuman}
-            onRecipeClick={onRecipeClick}
-            onNavigate={onNavigate}
-          />
-        </div>
+        {/* Featured Minuman Section */}
+        <FeaturedMinumanSection
+          recipes={featuredMinuman}
+          loading={loadingMinuman}
+          error={errorMinuman}
+          onRecipeClick={onRecipeClick}
+          onNavigate={onNavigate}
+        />
       </div>
     </div>
   );
