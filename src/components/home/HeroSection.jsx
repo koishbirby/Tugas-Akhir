@@ -123,7 +123,8 @@ export default function HeroSection() {
       </div>
 
       <div className="hidden md:block relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          
           {/* Left Content */}
           <div className="flex flex-col items-center text-center">
             
@@ -207,6 +208,7 @@ export default function HeroSection() {
               </p> */}
             {/* </motion.div> */}
           </div>
+        </div>
       </div>
     </section>
   );
