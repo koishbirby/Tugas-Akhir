@@ -31,7 +31,7 @@ export default function HomePage({ onRecipeClick, onNavigate }) {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-zinc-900 to-black">
+    <div className="min-h-screen bg-black">
 
       <RevealAnimation />
 

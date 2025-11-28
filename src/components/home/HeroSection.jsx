@@ -4,7 +4,6 @@ import { ChefHat, Play, ArrowRight } from 'lucide-react';
 
 
 export default function HeroSection() {
-    
   const [countdown, setCountdown] = useState("");
 
   useEffect(() => {
@@ -146,6 +145,7 @@ export default function HeroSection() {
                 </h1>
               </div>
               <p className="text-2xl text-slate-600 mb-8">Warisan Kuliner Indonesia</p>
+              <p className="text-xl font-semibold text-orange-400 drop-shadow mb-6">🎃 Halloween Countdown: {countdown}</p>
               <p className="text-lg text-slate-500 max-w-lg leading-relaxed">
                 Temukan ribuan resep autentik dari seluruh Nusantara. Dari masakan tradisional hingga kreasi modern yang menggugah selera.
               </p>
