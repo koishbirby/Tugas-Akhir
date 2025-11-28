@@ -56,20 +56,13 @@ export default function HeroSection() {
 
       <div className="md:hidden relative z-10 w-full px-4 py-8 text-center">
         <div className="mb-4">
-          <h2 className="text-2xl font-medium text-slate-800 mb-2">
-            Selamat datang di
-          </h2>
           <div className="relative inline-block">
             <div className="absolute inset-0 bg-gradient-to-r from-blue-400 via-blue-300 to-blue-200 transform -skew-y-1 rounded-lg opacity-80"></div>
             <h1 className="relative text-2xl font-bold text-slate-800 px-4 py-2">
               The Season of Halloween is Upon Us All!
             </h1>
           </div>
-          <p className="text-slate-600 text-base mb-4 mt-4">Warisan Kuliner Indonesia</p>
-          <p className="text-xl font-semibold text-orange-400 drop-shadow mb-6">🎃 Halloween Countdown: {countdown}</p>
-          <p className="text-slate-500 text-sm max-w-xs mx-auto leading-relaxed">
-            Temukan ribuan resep autentik dari seluruh Nusantara. Dari masakan tradisional hingga kreasi modern.
-          </p>
+          <h1 className="text-xl font-semibold text-orange-400 drop-shadow mb-6">🎃 Halloween Countdown: {countdown}</h1>
         </div>
 
         <div className="mb-8 max-w-xs mx-auto">
