@@ -146,7 +146,7 @@ export default function HeroSection() {
               >
                 <img 
                   src="https://images.unsplash.com/photo-1485745631157-311b6f1f6e1c"
-                  className="w-full h-48 object-cover rounded-xl mb-4"
+                  className="w-full h-[200px] object-cover rounded-xl mb-4"
                 />
                 <h2 className="text-xl font-bold text-white mb-2">The Headless Horseman</h2>
                 <p className="text-blue-200 text-sm">Global Myth</p>
@@ -162,7 +162,7 @@ export default function HeroSection() {
               >
                 <img 
                   src="https://images.unsplash.com/photo-1489657780376-e0d8630c2f76"
-                  className="w-full h-48 object-cover rounded-xl mb-4"
+                  className="w-full h-[200px] object-cover rounded-xl mb-4"
                 />
                 <h2 className="text-xl font-bold text-white mb-2">The Banshee</h2>
                 <p className="text-blue-200 text-sm">Irish Folklore</p>
@@ -178,7 +178,7 @@ export default function HeroSection() {
               >
                 <img 
                   src="https://images.unsplash.com/photo-1593113830409-1b4c1b945cbb"
-                  className="w-full h-48 object-cover rounded-xl mb-4"
+                  className="w-full h-[200px] object-cover rounded-xl mb-4"
                 />
                 <h2 className="text-xl font-bold text-white mb-2">The Wendigo</h2>
                 <p className="text-blue-200 text-sm">North American Legend</p>
