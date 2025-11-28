@@ -123,7 +123,7 @@ export default function HeroSection() {
       </div>
 
       <div className="hidden md:block relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        <div className="flex justify-center gap-10 mt-6 flex-wrap">
           
           {/* Left Content */}
           <div className="flex flex-col items-center text-center">
@@ -141,7 +141,8 @@ export default function HeroSection() {
                 initial={{ opacity: 0, y: -40 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7, ease: "easeOut" }}
-                className="bg-black/40 backdrop-blur-xl border border-white/20 rounded-2xl p-6 shadow-xl max-w-sm"
+                className="bg-black/40 backdrop-blur-xl border border-white/20 rounded-2xl p-6 shadow-xl w-[260px] h-[380px]"
+
               >
                 <img 
                   src="https://images.unsplash.com/photo-1485745631157-311b6f1f6e1c"
@@ -156,7 +157,8 @@ export default function HeroSection() {
                 initial={{ opacity: 0, y: -50 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.9, ease: "easeOut" }}
-                className="bg-black/40 backdrop-blur-xl border border-white/20 rounded-2xl p-6 shadow-xl max-w-sm"
+                className="bg-black/40 backdrop-blur-xl border border-white/20 rounded-2xl p-6 shadow-xl w-[260px] h-[380px]"
+
               >
                 <img 
                   src="https://images.unsplash.com/photo-1489657780376-e0d8630c2f76"
@@ -171,7 +173,8 @@ export default function HeroSection() {
                 initial={{ opacity: 0, y: -60 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1.1, ease: "easeOut" }}
-                className="bg-black/40 backdrop-blur-xl border border-white/20 rounded-2xl p-6 shadow-xl max-w-sm"
+                className="bg-black/40 backdrop-blur-xl border border-white/20 rounded-2xl p-6 shadow-xl w-[260px] h-[380px]"
+
               >
                 <img 
                   src="https://images.unsplash.com/photo-1593113830409-1b4c1b945cbb"
