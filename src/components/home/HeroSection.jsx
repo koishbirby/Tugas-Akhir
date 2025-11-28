@@ -123,36 +123,32 @@ export default function HeroSection() {
       </div>
 
       <div className="hidden md:block relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="grid grid-cols-1 gap-16 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           
           {/* Left Content */}
-          <div className="text-center lg:text-left">
-            <div className="mb-16 lg:mb-20">
-              <div className="relative inline-block mb-8">
-                <h1 className="text-5xl lg:text-6xl font-semibold text-slate-800 px-6 py-3 whitespace-nowrap shadow-xl shadow-blue-300/50 rounded-xl">
-                  Beneath the grave,
-                </h1>
-                <h2 className="text-5xl lg:text-6xl font-semibold text-slate-800 px-6 py-3 whitespace-nowrap shadow-xl shadow-blue-300/50 rounded-xl"> 
-                  Lies blood-curdling regrets that haunt us.
-                </h2>
-                
+          <div className="flex flex-col items-center lg:items-start text-center lg:text-left">
+            
+            {/* Countdown */}
+            <h1 className="text-xl font-semibold text-orange-400 drop-shadow mb-8">
+              🎃 Halloween Countdown: {countdown}
+            </h1>
 
-              </div>
+            {/* Featured Myth Card */}
+            <div className="bg-black/40 backdrop-blur-xl border border-white/20 rounded-3xl p-10 shadow-2xl max-w-lg">
+              <img 
+                src="https://images.unsplash.com/photo-1485745631157-311b6f1f6e1c"
+                alt="Featured Myth"
+                className="w-full h-60 object-cover rounded-2xl mb-6"
+              />
 
-              <h1 className="text-xl font-semibold text-orange-400 drop-shadow mb-6">{countdown}</h1>
-            </div>
+              <h2 className="text-4xl font-bold text-white mb-3">The Headless Horseman</h2>
+              <p className="text-blue-200 text-lg mb-4">Featured Global Myth of the Month</p>
 
-            {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-6 justify-center lg:justify-start">
-              <button className="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-10 py-5 rounded-2xl font-semibold shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 flex items-center justify-center space-x-3 text-lg">
-                <ChefHat className="w-6 h-6" />
-                <span>Jelajahi Resep</span>
-                <ArrowRight className="w-5 h-5" />
-              </button>
-              <button className="bg-white/25 backdrop-blur-xl border border-white/40 text-slate-700 px-10 py-5 rounded-2xl font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 flex items-center justify-center space-x-3 text-lg">
-                <Play className="w-6 h-6" />
-                <span>Video Tutorial</span>
-              </button>
+              <p className="text-slate-200 text-base leading-relaxed">
+                A legendary apparition known for riding through fog-covered lands without
+                a head, searching endlessly for the one who took it. A classic tale that
+                appears in various forms throughout Europe and America.
+              </p>
             </div>
           </div>
         </div>
