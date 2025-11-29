@@ -2,7 +2,7 @@
 import { useRecipes } from '../hooks/useRecipes';
 import HeroSection from '../components/home/HeroSection';
 import FeaturedMakananSection from '../components/home/FeaturedMakananSection';
-import FeaturedMinumanSection from '../components/home/FeaturedMinumanSection';
+import FeaturedWitnessSection from '../components/home/FeaturedWitnessSection';
 import RevealAnimation from '../components/common/RevealAnimation';
 
 export default function HomePage({ onRecipeClick, onNavigate }) {
@@ -48,12 +48,12 @@ export default function HomePage({ onRecipeClick, onNavigate }) {
         />
 
         {/* Featured Minuman Section */}
-        <FeaturedMinumanSection
-          recipes={featuredMinuman}
-          loading={loadingMinuman}
-          error={errorMinuman}
-          onRecipeClick={onRecipeClick}
-          onNavigate={onNavigate}
+        <FeaturedWitnessSection
+          // recipes={featuredMinuman}
+          // loading={loadingMinuman}
+          // error={errorMinuman}
+          // onRecipeClick={onRecipeClick}
+          // onNavigate={onNavigate}
         />
       </div>
     </div>
