@@ -2,7 +2,7 @@
 import { useRecipes } from '../hooks/useRecipes';
 import HeroSection from '../components/home/HeroSection';
 import FeaturedMakananSection from '../components/home/FeaturedMakananSection';
-import FeaturedMinumanSection from '../components/home/FeaturedMinumanSection';
+import FeaturedMythsSection from '../components/home/FeaturedMinumanSection';
 import RevealAnimation from '../components/common/RevealAnimation';
 
 export default function HomePage({ onRecipeClick, onNavigate }) {
@@ -18,13 +18,13 @@ export default function HomePage({ onRecipeClick, onNavigate }) {
     order: 'desc'
   });
 
-  // Fetch featured minuman (drinks) recipes from API
+  // Fetch featured myths from API
   const { 
-    recipes: featuredMinuman,
-    loading: loadingMinuman,
-    error: errorMinuman
+    recipes: featuredMyths,
+    loading: loadingMyths,
+    error: errorMyths
   } = useRecipes({
-    category: 'minuman',
+    category: 'myths',
     limit: 2,
     sort_by: 'created_at',
     order: 'desc'
@@ -47,11 +47,11 @@ export default function HomePage({ onRecipeClick, onNavigate }) {
           onNavigate={onNavigate}
         />
 
-        {/* Featured Minuman Section */}
-        <FeaturedMinumanSection
-          recipes={featuredMinuman}
-          loading={loadingMinuman}
-          error={errorMinuman}
+        {/* Featured Myths Section */}
+        <FeaturedMythsSection
+          recipes={featuredMyths}
+          loading={loadingMyths}
+          error={errorMyths}
           onRecipeClick={onRecipeClick}
           onNavigate={onNavigate}
         />

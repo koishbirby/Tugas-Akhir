@@ -2,7 +2,7 @@
 import { Clock, Star, ChefHat, Coffee } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 
-export default function FeaturedMinumanSection({ recipes, loading, error, onRecipeClick, onNavigate }) {
+export default function FeaturedMythsSection({ recipes, loading, error, onRecipeClick, onNavigate }) {
   const [visibleMinuman, setVisibleMinuman] = useState(new Set());
   const minumanRefs = useRef([]);
 
@@ -30,22 +30,22 @@ export default function FeaturedMinumanSection({ recipes, loading, error, onReci
     };
   }, [recipes]);
 
-  if (loading) {
+    if (loading) {
     return (
       <section>
-        <h2 className="text-xl md:text-3xl font-bold text-slate-800 mb-6">Resep Minuman</h2>
+        <h2 className="text-xl md:text-3xl font-bold text-slate-800 mb-6">Featured Myths</h2>
         <div className="text-center py-12">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Memuat resep minuman...</p>
+          <p className="mt-4 text-gray-600">Loading myths...</p>
         </div>
       </section>
     );
   }
 
-  if (error) {
+    if (error) {
     return (
       <section>
-        <h2 className="text-xl md:text-3xl font-bold text-slate-800 mb-6">Resep Minuman</h2>
+        <h2 className="text-xl md:text-3xl font-bold text-slate-800 mb-6">Featured Myths</h2>
         <div className="text-center py-12">
           <p className="text-red-600">Error: {error}</p>
         </div>
@@ -53,12 +53,12 @@ export default function FeaturedMinumanSection({ recipes, loading, error, onReci
     );
   }
 
-  if (!recipes || recipes.length === 0) {
+    if (!recipes || recipes.length === 0) {
     return (
       <section>
-        <h2 className="text-xl md:text-3xl font-bold text-slate-800 mb-6">Resep Minuman</h2>
+        <h2 className="text-xl md:text-3xl font-bold text-slate-800 mb-6">Featured Myths</h2>
         <div className="text-center py-12">
-          <p className="text-gray-600">Belum ada resep minuman</p>
+          <p className="text-gray-600">No myths available</p>
         </div>
       </section>
     );
@@ -67,9 +67,9 @@ export default function FeaturedMinumanSection({ recipes, loading, error, onReci
   return (
     <section>
       <div className="flex items-center justify-between mb-6 md:mb-8">
-        <h2 className="text-xl md:text-3xl font-bold text-slate-800">Resep Minuman</h2>
+        <h2 className="text-xl md:text-3xl font-bold text-slate-800">Featured Myths</h2>
         <button 
-          onClick={() => onNavigate && onNavigate('minuman')}
+          onClick={() => onNavigate && onNavigate('myths')}
           className="text-slate-500 hover:text-slate-600 font-medium text-xs md:text-sm transition-colors duration-200 hover:underline"
         >
           Lihat Semua
@@ -106,7 +106,7 @@ export default function FeaturedMinumanSection({ recipes, loading, error, onReci
                 <div className="relative z-10 p-4 md:p-8 flex-1 flex flex-col justify-center">
                   <div className="flex items-center justify-between mb-2 md:mb-4">
                     <span className="text-xs font-semibold text-indigo-700 bg-indigo-100/90 px-2 md:px-3 py-1 md:py-1.5 rounded-full">
-                      Minuman
+                      Myth
                     </span>
                     {recipe.average_rating > 0 && (
                       <div className="flex items-center space-x-1 bg-white/90 px-2 py-1 rounded-full">
@@ -125,11 +125,11 @@ export default function FeaturedMinumanSection({ recipes, loading, error, onReci
                   <div className="flex items-center justify-between text-xs md:text-sm text-slate-600">
                     <div className="flex items-center space-x-1 md:space-x-2 bg-white/70 px-2 md:px-3 py-1 md:py-2 rounded-full">
                       <Clock className="w-3 h-3 md:w-4 md:h-4" />
-                      <span className="font-medium">{recipe.prep_time || 10} menit</span>
+                      <span className="font-medium">{recipe.prep_time || 10} min</span>
                     </div>
                     <div className="flex items-center space-x-1 md:space-x-2 bg-white/70 px-2 md:px-3 py-1 md:py-2 rounded-full">
                       <Coffee className="w-3 h-3 md:w-4 md:h-4" />
-                      <span className="font-medium">{recipe.difficulty || 'mudah'}</span>
+                      <span className="font-medium">{recipe.difficulty || 'easy'}</span>
                     </div>
                   </div>
                 </div>
