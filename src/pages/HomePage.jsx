@@ -4,8 +4,11 @@ import HeroSection from '../components/home/HeroSection';
 import FeaturedMakananSection from '../components/home/FeaturedMakananSection';
 import FeaturedWitnessSection from '../components/home/FeaturedWitnessSection';
 import RevealAnimation from '../components/common/RevealAnimation';
+import { useState } from 'react';
+import WitnessModal from '../components/modals/WitnessModal';
 
 export default function HomePage({ onRecipeClick, onNavigate }) {
+  const [modalWitness, setModalWitness] = useState(null);
   // Fetch featured makanan (food) recipes from API
   const { 
     recipes: featuredMakanan, 
@@ -39,22 +42,16 @@ export default function HomePage({ onRecipeClick, onNavigate }) {
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-16">
         {/* Featured Makanan Section */}
-        <FeaturedMakananSection
+        {/* <FeaturedMakananSection
           recipes={featuredMakanan}
           loading={loadingMakanan}
           error={errorMakanan}
           onRecipeClick={onRecipeClick}
           onNavigate={onNavigate}
-        />
+        /> */}
 
-        {/* Featured Minuman Section */}
-        <FeaturedWitnessSection
-          recipes={featuredMinuman}
-          loading={loadingMinuman}
-          error={errorMinuman}
-          onRecipeClick={onRecipeClick}
-          onNavigate={onNavigate}
-        />
+        {/* Featured Witness Section */}
+        <FeaturedWitnessSection setModalWitness={setModalWitness} />
       </div>
       {modalWitness && (
         <WitnessModal
