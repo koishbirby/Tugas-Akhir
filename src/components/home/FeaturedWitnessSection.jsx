@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
-import { witnessReports } from "../../data/witnessReports";
+import { witnessReports } from "../../data/report";
 
 export default function FeaturedWitnessSection({ setModalWitness }) {
 
