@@ -2,7 +2,7 @@
 import { useRecipes } from '../hooks/useRecipes';
 import HeroSection from '../components/home/HeroSection';
 import FeaturedMakananSection from '../components/home/FeaturedMakananSection';
-import FeaturedMythsSection from '../components/home/FeaturedMinumanSection';
+import FeaturedMythsSection from '../components/home/FeaturedMythsSection';
 import RevealAnimation from '../components/common/RevealAnimation';
 
 export default function HomePage({ onRecipeClick, onNavigate }) {
@@ -49,9 +49,9 @@ export default function HomePage({ onRecipeClick, onNavigate }) {
 
         {/* Featured Myths Section */}
         <FeaturedMythsSection
-          recipes={featuredMyths}
-          loading={loadingMyths}
-          error={errorMyths}
+          // recipes={featuredMyths}
+          // loading={loadingMyths}
+          // error={errorMyths}
           onRecipeClick={onRecipeClick}
           onNavigate={onNavigate}
         />
