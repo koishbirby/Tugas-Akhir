@@ -14,7 +14,7 @@ export default function WitnessModal({ witness, onClose }) {
           onClick={onClose}
           className="absolute top-4 right-4 text-orange-400 hover:text-orange-300 font-bold"
         >
-          ×
+          x
         </button>
 
         <h2 className="text-2xl font-semibold text-orange-300">{witness.title}</h2>

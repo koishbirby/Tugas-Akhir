@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { ChefHat, Play, ArrowRight } from 'lucide-react';
 import { motion } from "framer-motion";
 import WitnessPopUp from '../modals/WitnessModal';
+import Report from '../../data/report';
 
 export default function HeroSection() {
   const [modalWitness, setModalWitness] = useState(null);
@@ -188,89 +189,28 @@ export default function HeroSection() {
             {/* Featured Myth Section (Tarot Card + Report) */}
             <div className="flex flex-col lg:flex-row items-center justify-center gap-10 mt-10">
 
-              {/* Tarot Card */}
-              <motion.div
-                initial={{ opacity: 0, y: -40 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
-                className="bg-black/40 backdrop-blur-xl border border-white/20 rounded-2xl p-6 shadow-2xl w-[300px] lg:w-[350px] h-[550px] flex flex-col cursor-pointer"
-                onClick={() =>
-                  setModalWitness({
-                    title: "The Headless Horseman",
-                    description:
-                      "I saw it on a foggy October night — a rider with no head, galloping through the old forest road. The horse's eyes burned like embers, and the sound of hooves echoed long after it passed.",
-                    author: "- Anonymous Villager, 1823",
-                    proofImages: [
-                      "https://images.unsplash.com/photo-1606788075760-0b4f5f6f8d89?w=200&h=150&fit=crop",
-                      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=200&h=150&fit=crop",
-                      "https://images.unsplash.com/photo-1522199755839-a2bacb67c546?w=200&h=150&fit=crop",
-                      "https://images.unsplash.com/photo-1519985176271-adb1088fa94c?w=200&h=150&fit=crop"
-                    ]
-                  })
-                }
-              >
-                <img 
-                  src="https://images.unsplash.com/photo-1485745631157-311b6f1f6e1c"
-                  className="w-full h-[450px] object-cover rounded-xl mb-5"
-                />
-                <h2 className="text-2xl font-bold text-white text-center mb-1">
-                  The Headless Horseman
-                </h2>
-                <p className="text-blue-300 text-center text-sm">
-                  Global Myth
-                </p>
-              </motion.div>
-
-              {/* Witness Report Panel */}
-              <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1.0, ease: "easeOut" }}
-                className="bg-black/40 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl w-full lg:w-[450px] p-8 max-h-[550px] overflow-y-auto cursor-pointer"
-                onClick={() =>
-                  setModalWitness({
-                    title: "Witness Report",
-                    description:
-                      "I saw it on a foggy October night — a rider with no head, galloping through the old forest road. The horse's eyes burned like embers, and the sound of hooves echoed long after it passed. I don't know what it wanted… but I pray we never meet again.",
-                    author: "- Anonymous Villager, 1823",
-                    proofImages: [
-                      "https://images.unsplash.com/photo-1606788075760-0b4f5f6f8d89?w=200&h=150&fit=crop",
-                      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=200&h=150&fit=crop",
-                      "https://images.unsplash.com/photo-1522199755839-a2bacb67c546?w=200&h=150&fit=crop",
-                      "https://images.unsplash.com/photo-1519985176271-adb1088fa94c?w=200&h=150&fit=crop"
-                    ]
-                  })
-                }
-              >
-                <h3 className="text-2xl font-semibold text-orange-300 mb-4">
-                  📜 Witness Report
-                </h3>
-                <p className="text-slate-200 leading-relaxed mb-4">
-                  “I saw it on a foggy October night — a rider with no head, galloping 
-                  through the old forest road. The horse's eyes burned like embers, 
-                  and the sound of hooves echoed long after it passed. 
-                  I don't know what it wanted… but I pray we never meet again.”
-                </p>
-                <p className="text-slate-400 text-sm italic mb-2">
-                  - Anonymous Villager, 1823
-                </p>
-                <div className="flex gap-3 overflow-x-auto py-2">
-                  {[
-                    "https://images.unsplash.com/photo-1606788075760-0b4f5f6f8d89?w=200&h=150&fit=crop",
-                    "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=200&h=150&fit=crop",
-                    "https://images.unsplash.com/photo-1522199755839-a2bacb67c546?w=200&h=150&fit=crop",
-                    "https://images.unsplash.com/photo-1519985176271-adb1088fa94c?w=200&h=150&fit=crop"
-                  ].map((src, index) => (
-                    <div key={index} className="flex-shrink-0 w-24 h-24 rounded-lg overflow-hidden border border-white/20 shadow-sm">
-                      <img 
-                        src={src}
-                        alt={`Proof ${index + 1}`}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  ))}
-                </div>
-              </motion.div>
+              {Report.map((report) => (
+                <motion.div
+                  key={report.id}
+                  initial={{ opacity: 0, y: -40 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, ease: "easeOut" }}
+                  className="bg-black/40 backdrop-blur-xl border border-white/20 rounded-2xl p-6 shadow-2xl w-[300px] lg:w-[350px] h-[550px] flex flex-col cursor-pointer"
+                  onClick={() => setModalWitness(report)}
+                >
+                  <img
+                    src={report.proofImages[0]}
+                    className="w-full h-[450px] object-cover rounded-xl mb-5"
+                  />
+                  <h2 className="text-2xl font-bold text-white text-center mb-1">
+                    {report.title}
+                  </h2>
+                  <p className="text-blue-300 text-center text-sm">{report.category}</p>
+                  <p className="text-slate-200 text-sm mt-2 line-clamp-3">
+                    {report.description}
+                  </p>
+                </motion.div>
+              ))}
 
             </div>
 
