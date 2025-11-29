@@ -1,47 +1,42 @@
-import axios from 'axios';
-import { BASE_URL } from '../config/api';
+// src/services/UploadService.js
+import { supabase } from '../lib/supabaseClient';
 
 class UploadService {
   /**
-   * Upload recipe image to MinIO
+   * Upload image to Supabase Storage
    * @param {File} file - Image file to upload
-   * @returns {Promise}
+   * @param {string} folder - Folder in storage bucket
+   * @returns {Promise<string>} - Public URL of uploaded image
    */
-  async uploadImage(file) {
-    try {
-      // Validate file
-      if (!file) {
-        throw new Error('No file provided');
-      }
+  async uploadImage(file, folder = 'reports') {
+    if (!file) throw new Error('No file provided');
 
-      // Validate file type
-      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
-      if (!allowedTypes.includes(file.type)) {
-        throw new Error('Invalid file type. Allowed: .jpg, .jpeg, .png, .webp');
-      }
-
-      // Validate file size (5MB)
-      const maxSize = 5 * 1024 * 1024; // 5MB in bytes
-      if (file.size > maxSize) {
-        throw new Error('File size exceeds 5MB limit');
-      }
-
-      // Create form data
-      const formData = new FormData();
-      formData.append('image', file);
-
-      // Upload to server
-      const response = await axios.post(`${BASE_URL}/api/v1/upload`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-        timeout: 30000, // 30 seconds for upload
-      });
-
-      return response.data;
-    } catch (error) {
-      throw error;
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      throw new Error('Invalid file type. Allowed: .jpg, .jpeg, .png, .webp');
     }
+
+    const maxSize = 5 * 1024 * 1024;
+    if (file.size > maxSize) throw new Error('File size exceeds 5MB');
+
+    // Generate a unique filename
+    const fileName = `${folder}/${Date.now()}_${file.name}`;
+
+    // Upload to Supabase
+    const { data, error } = await supabase.storage
+      .from('your-bucket-name') // <-- replace with your bucket
+      .upload(fileName, file);
+
+    if (error) throw error;
+
+    // Get public URL
+    const { publicUrl, error: urlError } = supabase.storage
+      .from('your-bucket-name')
+      .getPublicUrl(fileName);
+
+    if (urlError) throw urlError;
+
+    return publicUrl;
   }
 }
 
