@@ -49,13 +49,19 @@ export default function HomePage({ onRecipeClick, onNavigate }) {
 
         {/* Featured Minuman Section */}
         <FeaturedWitnessSection
-          // recipes={featuredMinuman}
-          // loading={loadingMinuman}
-          // error={errorMinuman}
-          // onRecipeClick={onRecipeClick}
-          // onNavigate={onNavigate}
+          recipes={featuredMinuman}
+          loading={loadingMinuman}
+          error={errorMinuman}
+          onRecipeClick={onRecipeClick}
+          onNavigate={onNavigate}
         />
       </div>
+      {modalWitness && (
+        <WitnessModal
+          witness={modalWitness}
+          onClose={() => setModalWitness(null)}
+        />
+      )}
     </div>
   );
 }
