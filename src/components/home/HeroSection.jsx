@@ -194,7 +194,7 @@ export default function HeroSection() {
               >
                 <img 
                   src="https://images.unsplash.com/photo-1485745631157-311b6f1f6e1c"
-                  className="w-full h-[500px] object-cover rounded-xl mb-5"
+                  className="w-full h-[450px] object-cover rounded-xl mb-5"
                 />
 
                 <h2 className="text-2xl font-bold text-white text-center mb-1">
