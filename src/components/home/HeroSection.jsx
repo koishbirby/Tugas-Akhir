@@ -134,9 +134,8 @@ export default function HeroSection() {
             </h1>
 
             {/* Featured Myth Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-6 justify-items-center">
+            {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-6 justify-items-center">
 
-              {/* Card 1 */}
               <motion.div
                 initial={{ opacity: 0, y: -40 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -152,7 +151,6 @@ export default function HeroSection() {
                 <p className="text-blue-200 text-sm">Global Myth</p>
               </motion.div>
 
-              {/* Card 2 */}
               <motion.div
                 initial={{ opacity: 0, y: -50 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -168,7 +166,6 @@ export default function HeroSection() {
                 <p className="text-blue-200 text-sm">Irish Folklore</p>
               </motion.div>
 
-              {/* Card 3 */}
               <motion.div
                 initial={{ opacity: 0, y: -60 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -184,8 +181,54 @@ export default function HeroSection() {
                 <p className="text-blue-200 text-sm">North American Legend</p>
               </motion.div>
 
-            </div>
+            </div> */}
+            {/* Featured Myth Section (Tarot Card + Report) */}
+            <div className="flex flex-col lg:flex-row items-center justify-center gap-10 mt-10">
 
+              {/* Tarot Card */}
+              <motion.div
+                initial={{ opacity: 0, y: -40 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+                className="bg-black/40 backdrop-blur-xl border border-white/20 rounded-2xl p-6 shadow-2xl w-[300px] lg:w-[350px] h-[550px] flex flex-col"
+              >
+                <img 
+                  src="https://images.unsplash.com/photo-1485745631157-311b6f1f6e1c"
+                  className="w-full h-[380px] object-cover rounded-xl mb-5"
+                />
+
+                <h2 className="text-2xl font-bold text-white text-center mb-1">
+                  The Headless Horseman
+                </h2>
+                <p className="text-blue-300 text-center text-sm">
+                  Global Myth
+                </p>
+              </motion.div>
+
+              {/* Witness Report Panel */}
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1.0, ease: "easeOut" }}
+                className="bg-black/40 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl w-full lg:w-[450px] p-8 max-h-[550px] overflow-y-auto"
+              >
+                <h3 className="text-2xl font-semibold text-orange-300 mb-4">
+                  📜 Witness Report
+                </h3>
+
+                <p className="text-slate-200 leading-relaxed mb-4">
+                  “I saw it on a foggy October night — a rider with no head, galloping 
+                  through the old forest road. The horse's eyes burned like embers, 
+                  and the sound of hooves echoed long after it passed. 
+                  I don't know what it wanted… but I pray we never meet again.”
+                </p>
+
+                <p className="text-slate-400 text-sm italic">
+                  - Anonymous Villager, 1823
+                </p>
+              </motion.div>
+
+            </div>
 
             {/* Featured Myth Card */}
             {/* <motion.div
@@ -202,14 +245,14 @@ export default function HeroSection() {
               />
 
               <h2 className="text-2xl font-bold text-white mb-3">The Headless Horseman</h2>
-              {/* <p className="text-blue-200 text-lg mb-4">Featured Global Myth of the Month</p>
+              <p className="text-blue-200 text-lg mb-4">Featured Global Myth of the Month</p>
 
               <p className="text-slate-200 text-base leading-relaxed">
                 A legendary apparition known for riding through fog-covered lands without
                 a head, searching endlessly for the one who took it. A classic tale that
                 appears in various forms throughout Europe and America.
-              </p> */}
-            {/* </motion.div> */}
+              </p>
+            </motion.div> */}
           </div>
         </div>
       </div>
