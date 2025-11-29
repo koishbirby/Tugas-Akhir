@@ -1,6 +1,6 @@
 // src/components/home/FeaturedCursedObjectsSection.jsx
 import { useState, useEffect, useRef } from 'react';
-import { cursedObjectReports } from "../../data/cursedObjectsReport";
+import { cursedObjects } from "../../data/cursedObjectReport";
 import { Package, Image as ImageIcon } from "lucide-react";
 
 export default function FeaturedCursedObjectsSection({ onRecipeClick, onNavigate }) {
@@ -43,7 +43,7 @@ export default function FeaturedCursedObjectsSection({ onRecipeClick, onNavigate
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
-        {cursedObjectReports.map((item, index) => (
+        {cursedObjects.map((item, index) => (
           <div
             key={item.id}
             ref={(el) => (cardRefs.current[index] = el)}
