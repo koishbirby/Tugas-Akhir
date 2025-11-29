@@ -125,7 +125,7 @@ export default function HeroSection() {
         </div>
       </div>
 
-      <div className="hidden md:block relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <div className="hidden md:block relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 0">
         <div className="flex justify-center gap-10 mt-6 flex-wrap">
           
           {/* Left Content */}
@@ -133,7 +133,7 @@ export default function HeroSection() {
             
             {/* Countdown */}
             <h1 className="text-xl font-semibold text-orange-400 drop-shadow mb-8">
-              🎃 Halloween Countdown: {countdown}
+              {countdown}
             </h1>
 
             {/* Featured Myth Cards */}
@@ -186,7 +186,7 @@ export default function HeroSection() {
 
             </div> */}
             {/* Featured Myth Section (Tarot Card + Report) */}
-            <div className="flex flex-col lg:flex-row items-center justify-center gap-10 mt-10">
+            <div className="flex flex-col lg:flex-row items-center justify-center gap-5 mt-10">
 
               {/* Tarot Card */}
               <motion.div
