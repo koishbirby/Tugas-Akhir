@@ -174,41 +174,41 @@ export default function RecipeDetail({
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-10">
+  <div className="max-w-3xl mx-auto px-4 py-10">
 
-      {/* Title */}
-      <h1 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">
-        {post.title}
-      </h1>
+    {/* Title */}
+    <h1 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">
+      {post.title}
+    </h1>
 
-      {/* Author */}
-      <p className="text-slate-600 text-sm mb-6">
-        Ditulis oleh <span className="font-semibold">{post.author}</span>
-      </p>
+    {/* Author */}
+    <p className="text-slate-600 text-sm mb-6">
+      Ditulis oleh <span className="font-semibold">{post.author}</span>
+    </p>
 
-      {/* Images (if any) */}
-      {post.images && post.images.length > 0 && (
-        <div className="space-y-4 mb-8">
+    {/* Images (if any) */}
+    {post.images && post.images.length > 0 && (
+      <div className="space-y-4 mb-8">
 
-          {post.images.map((imgUrl, index) => (
-            <img
-              key={index}
-              src={imgUrl}
-              alt={`Blog image ${index + 1}`}
-              className="w-full rounded-xl shadow-md object-cover"
-            />
-          ))}
+        {post.images.map((imgUrl, index) => (
+          <img
+            key={index}
+            src={imgUrl}
+            alt={`Blog image ${index + 1}`}
+            className="w-full rounded-xl shadow-md object-cover"
+          />
+        ))}
 
-        </div>
-      )}
+      </div>
+    )}
 
-      {/* Blog Content */}
-      <div
-        className="prose prose-slate max-w-none"
-        dangerouslySetInnerHTML={{ __html: post.content }}
-      />
+    {/* Blog Content */}
+    <div
+      className="prose prose-slate max-w-none"
+      dangerouslySetInnerHTML={{ __html: post.content }}
+    />
 
-    </div>
-  );
+  </div>
+);
 
 }
