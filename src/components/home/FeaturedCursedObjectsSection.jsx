@@ -1,10 +1,12 @@
-// src/components/home/FeaturedCursedObjectsSection.jsx
 import { useState, useEffect, useRef } from 'react';
 import { cursedObjects } from "../../data/cursedObjectReport";
 import { Package, Image as ImageIcon } from "lucide-react";
+import WitnessPopUp from '../modals/WitnessModal';
+import { motion } from 'framer-motion';
 
-export default function FeaturedCursedObjectsSection({ onRecipeClick, onNavigate }) {
+export default function FeaturedCursedObjectsSection() {
   const [visibleCards, setVisibleCards] = useState(new Set());
+  const [modalWitness, setModalWitness] = useState(null);
   const cardRefs = useRef([]);
 
   useEffect(() => {
@@ -33,18 +35,11 @@ export default function FeaturedCursedObjectsSection({ onRecipeClick, onNavigate
     <section>
       <div className="flex items-center justify-between mb-8">
         <h2 className="text-xl md:text-3xl font-bold text-white">Featured Cursed Objects</h2>
-
-        <button
-          onClick={() => onNavigate && onNavigate('cursed-objects')}
-          className="text-gray-300 hover:text-white text-xs md:text-sm underline"
-        >
-          View All
-        </button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
         {cursedObjects.map((item, index) => (
-          <div
+          <motion.div
             key={item.id}
             ref={(el) => (cardRefs.current[index] = el)}
             className={`group transform transition-all duration-700 ${
@@ -54,13 +49,19 @@ export default function FeaturedCursedObjectsSection({ onRecipeClick, onNavigate
             }`}
           >
             <div
-              onClick={() => onRecipeClick && onRecipeClick(item.id)}
+              onClick={() =>
+                setModalWitness({
+                  title: item.title,
+                  description: item.description,
+                  author: item.origin,
+                  proofImages: item.proofImages || [],
+                })
+              }
               className="relative bg-white/10 backdrop-blur-xl border border-white/20
-                rounded-2xl overflow-hidden shadow-xl hover:bg-white/20 
-                hover:scale-[1.02] cursor-pointer transition-all"
+                         rounded-2xl overflow-hidden shadow-xl hover:bg-white/20 
+                         hover:scale-[1.02] cursor-pointer transition-all"
             >
               <div className="flex">
-                {/* Left Featured Image */}
                 <div className="h-28 w-28 md:h-48 md:w-48 overflow-hidden">
                   <img
                     src={item.proofImages?.[0]}
@@ -69,13 +70,11 @@ export default function FeaturedCursedObjectsSection({ onRecipeClick, onNavigate
                   />
                 </div>
 
-                {/* Right Content */}
                 <div className="flex-1 p-4 md:p-6">
                   <div className="flex justify-between items-center mb-2">
                     <span className="text-xs font-semibold bg-red-900/40 px-3 py-1 rounded-full text-red-200">
                       Cursed Object
                     </span>
-
                     <div className="flex items-center gap-1 text-xs text-red-200">
                       <ImageIcon className="w-3 h-3" />
                       {item.proofImages.length}
@@ -96,9 +95,17 @@ export default function FeaturedCursedObjectsSection({ onRecipeClick, onNavigate
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
+
+      {/* Modal */}
+      {modalWitness && (
+        <WitnessPopUp
+          data={modalWitness}
+          onClose={() => setModalWitness(null)}
+        />
+      )}
     </section>
   );
 }

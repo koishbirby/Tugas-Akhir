@@ -1,17 +1,32 @@
+// src/services/favoriteService.js
 import { supabase } from '../config/supabaseClient';
 
 class FavoriteService {
   /**
-   * Get all favorite posts by user identifier
+   * Get all favorite posts for a user with post details
    * @param {string} userIdentifier - User identifier
-   * @returns {Promise}
+   * @returns {Promise<{success: boolean, data: Array, message: string, error?: any}>}
    */
   async getFavorites(userIdentifier) {
     try {
       const { data, error } = await supabase
         .from('favorites')
-        .select('id, post_id, user_identifier, created_at')
-        .eq('user_identifier', userIdentifier);
+        .select(`
+          id,
+          post_id,
+          user_identifier,
+          created_at,
+          post:blog_posts(
+            id,
+            title,
+            excerpt,
+            author,
+            category,
+            created_at
+          )
+        `)
+        .eq('user_identifier', userIdentifier)
+        .order('created_at', { ascending: false });
 
       if (error) throw error;
 
@@ -20,33 +35,30 @@ class FavoriteService {
         data: data || [],
         message: 'Favorites fetched successfully',
       };
-    } catch (error) {
+    } catch (err) {
       return {
         success: false,
         data: [],
-        message: error.message || 'Failed to fetch favorites',
-        error,
+        message: err.message || 'Failed to fetch favorites',
+        error: err,
       };
     }
   }
 
   /**
-   * Toggle favorite (add if not exists, remove if exists)
-   * @param {Object} data - Favorite data
-   * @param {string} data.post_id - Post ID (or recipe_id for compatibility)
-   * @param {string} data.user_identifier - User identifier
-   * @returns {Promise}
+   * Toggle favorite (add/remove) for a user
+   * @param {Object} params
+   * @param {string} params.post_id - ID of the post to favorite
+   * @param {string} params.user_identifier - User identifier
+   * @returns {Promise<{success: boolean, data: Object, message: string, error?: any}>}
    */
-  async toggleFavorite(data) {
+  async toggleFavorite({ post_id, user_identifier }) {
     try {
-      const postId = data.post_id || data.recipe_id;
-      const { user_identifier } = data;
-
       // Check if favorite already exists
       const { data: existing, error: checkError } = await supabase
         .from('favorites')
         .select('id')
-        .eq('post_id', postId)
+        .eq('post_id', post_id)
         .eq('user_identifier', user_identifier)
         .maybeSingle();
 
@@ -63,51 +75,59 @@ class FavoriteService {
 
         return {
           success: true,
-          data: { favorited: false },
+          data: { favorited: false, post_id },
           message: 'Favorite removed',
         };
       } else {
         // Add favorite
         const { data: newFavorite, error: insertError } = await supabase
           .from('favorites')
-          .insert([
-            {
-              post_id: postId,
-              user_identifier,
-            },
-          ])
-          .select('id, post_id, user_identifier, created_at');
+          .insert([{ post_id, user_identifier }])
+          .select(`
+            id,
+            post_id,
+            user_identifier,
+            created_at,
+            post:blog_posts(
+              id,
+              title,
+              excerpt,
+              author,
+              category,
+              created_at
+            )
+          `);
 
         if (insertError) throw insertError;
 
         return {
           success: true,
-          data: { favorited: true, ...newFavorite?.[0] },
+          data: { favorited: true, ...newFavorite[0] },
           message: 'Favorite added',
         };
       }
-    } catch (error) {
+    } catch (err) {
       return {
         success: false,
         data: null,
-        message: error.message || 'Failed to toggle favorite',
-        error,
+        message: err.message || 'Failed to toggle favorite',
+        error: err,
       };
     }
   }
 
   /**
-   * Check if a post is favorited by user
-   * @param {string} postId - Post ID
+   * Check if a post is favorited by a user
+   * @param {string} post_id - Post ID
    * @param {string} userIdentifier - User identifier
-   * @returns {Promise}
+   * @returns {Promise<{success: boolean, favorited: boolean, error?: any}>}
    */
-  async isFavorited(postId, userIdentifier) {
+  async isFavorited(post_id, userIdentifier) {
     try {
       const { data, error } = await supabase
         .from('favorites')
         .select('id')
-        .eq('post_id', postId)
+        .eq('post_id', post_id)
         .eq('user_identifier', userIdentifier)
         .maybeSingle();
 
@@ -115,14 +135,13 @@ class FavoriteService {
 
       return {
         success: true,
-        data: { isFavorited: !!data },
+        favorited: !!data,
       };
-    } catch (error) {
+    } catch (err) {
       return {
         success: false,
-        data: { isFavorited: false },
-        message: error.message || 'Failed to check favorite status',
-        error,
+        favorited: false,
+        error: err,
       };
     }
   }

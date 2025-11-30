@@ -1,15 +1,18 @@
 // src/components/common/FavoriteButton.jsx
 import { useState, useEffect } from 'react';
 import { Heart } from 'lucide-react';
+import FavoriteService from '../../services/favoriteService';
+import userService from '../../services/userService';
 
 /**
  * FavoriteButton Component
- * Toggles favorite status with localStorage support
+ * Toggles favorite status with Supabase support
  */
-export default function FavoriteButton({ recipeId, onToggle, showCount = false, initialCount = 0, size = 'md' }) {
+export default function FavoriteButton({ recipeId, showCount = false, initialCount = 0, size = 'md' }) {
   const [isFavorited, setIsFavorited] = useState(false);
   const [favoriteCount, setFavoriteCount] = useState(initialCount);
   const [isAnimating, setIsAnimating] = useState(false);
+  const userIdentifier = userService.getUserIdentifier();
 
   // Size variants
   const sizes = {
@@ -24,41 +27,42 @@ export default function FavoriteButton({ recipeId, onToggle, showCount = false, 
     lg: 'w-6 h-6'
   };
 
-  // Check if recipe is favorited on mount
+  // Load favorite status from Supabase on mount
   useEffect(() => {
-    const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
-    setIsFavorited(favorites.includes(recipeId));
-  }, [recipeId]);
+    async function fetchFavorite() {
+      if (!userIdentifier) return;
+
+      try {
+        const res = await FavoriteService.isFavorited(recipeId, userIdentifier);
+        if (res.success) setIsFavorited(res.data.isFavorited);
+      } catch (err) {
+        console.error('Error checking favorite status:', err);
+      }
+    }
+
+    fetchFavorite();
+  }, [recipeId, userIdentifier]);
 
   const handleToggle = async (e) => {
-    e.stopPropagation(); // Prevent card click
+    e.stopPropagation();
     
     setIsAnimating(true);
     setTimeout(() => setIsAnimating(false), 300);
 
-    // Toggle in localStorage
-    const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
-    const index = favorites.indexOf(recipeId);
-    
-    let newFavoritedState;
-    if (index > -1) {
-      // Remove from favorites
-      favorites.splice(index, 1);
-      newFavoritedState = false;
-      setFavoriteCount(prev => Math.max(0, prev - 1));
-    } else {
-      // Add to favorites
-      favorites.push(recipeId);
-      newFavoritedState = true;
-      setFavoriteCount(prev => prev + 1);
-    }
-    
-    localStorage.setItem('favorites', JSON.stringify(favorites));
+    // Optimistic UI update
+    const newFavoritedState = !isFavorited;
     setIsFavorited(newFavoritedState);
+    setFavoriteCount(prev => newFavoritedState ? prev + 1 : Math.max(0, prev - 1));
 
-    // Call parent callback if provided
-    if (onToggle) {
-      onToggle(recipeId, newFavoritedState);
+    // Update Supabase
+    if (!userIdentifier) return;
+    try {
+      await FavoriteService.toggleFavorite({ post_id: recipeId, user_identifier: userIdentifier });
+    } catch (err) {
+      console.error('Failed to toggle favorite in database:', err);
+      // Revert UI if error
+      setIsFavorited(!newFavoritedState);
+      setFavoriteCount(prev => newFavoritedState ? Math.max(0, prev - 1) : prev + 1);
     }
   };
 
@@ -67,7 +71,7 @@ export default function FavoriteButton({ recipeId, onToggle, showCount = false, 
       onClick={handleToggle}
       className={`
         ${sizes[size]} rounded-full flex items-center justify-center gap-1.5
-        transition-all duration-200 
+        transition-all duration-200
         ${isFavorited 
           ? 'bg-red-500 hover:bg-red-600 text-white' 
           : 'bg-white/90 hover:bg-white text-slate-700 hover:text-red-500'
@@ -78,13 +82,13 @@ export default function FavoriteButton({ recipeId, onToggle, showCount = false, 
       `}
       title={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
     >
-      <Heart 
+      <Heart
         className={`
           ${iconSizes[size]} 
           transition-all duration-200
           ${isFavorited ? 'fill-current' : ''}
           ${isAnimating ? 'animate-pulse' : ''}
-        `} 
+        `}
       />
       {showCount && favoriteCount > 0 && (
         <span className="text-xs font-semibold">

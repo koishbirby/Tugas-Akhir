@@ -53,22 +53,21 @@ export function useFavorites() {
 /**
  * Custom hook for toggling favorites
  * @returns {Object} - { toggleFavorite, loading, error }
- */
-export function useToggleFavorite() {
+ */export function useToggleFavorite() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const userIdentifier = getUserIdentifier();
 
-  const toggleFavorite = async (recipeId) => {
+  const toggleFavorite = async (postId) => {
     try {
       setLoading(true);
       setError(null);
-      
+
       const response = await favoriteService.toggleFavorite({
-        recipe_id: recipeId,
+        post_id: postId,
         user_identifier: userIdentifier,
       });
-      
+
       if (response.success) {
         return response.data;
       } else {
@@ -83,10 +82,27 @@ export function useToggleFavorite() {
     }
   };
 
+  return { toggleFavorite, loading, error };
+}
+
+export function useIsFavorited(postId) {
+  const { favorites, loading: fetchLoading, refetch } = useFavorites();
+  const { toggleFavorite: toggle, loading: toggleLoading } = useToggleFavorite();
+
+  const isFavorited = favorites.some(fav => fav.post_id === postId);
+
+  const toggleFavorite = async () => {
+    const result = await toggle(postId);
+    if (result) {
+      await refetch(); // refresh the list
+    }
+    return result;
+  };
+
   return {
+    isFavorited,
+    loading: fetchLoading || toggleLoading,
     toggleFavorite,
-    loading,
-    error,
   };
 }
 
@@ -99,7 +115,7 @@ export function useIsFavorited(recipeId) {
   const { favorites, loading: fetchLoading, refetch } = useFavorites();
   const { toggleFavorite: toggle, loading: toggleLoading } = useToggleFavorite();
   
-  const isFavorited = favorites.some(fav => fav.id === recipeId);
+  const isFavorited = favorites.some(fav => fav.post_id === recipeId);
 
   const toggleFavorite = async () => {
     const result = await toggle(recipeId);
