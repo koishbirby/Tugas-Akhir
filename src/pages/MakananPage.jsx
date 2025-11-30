@@ -60,16 +60,6 @@ export default function MakananPage({ onRecipeClick }) {
   return (
     <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-indigo-50 pb-20 md:pb-8">
       <main className="max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-12">
-        {/* Header */}
-        <div className="mb-8 text-center">
-          <h1 className="text-3xl md:text-5xl font-bold text-slate-800 mb-4">
-            Resep Makanan
-          </h1>
-          <p className="text-slate-600 max-w-2xl mx-auto">
-            Temukan berbagai resep makanan nusantara yang lezat
-          </p>
-        </div>
-
         {/* Advanced Filter */}
         <AdvancedFilter
           onSearchChange={handleSearchChange}

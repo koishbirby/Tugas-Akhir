@@ -1,12 +1,12 @@
 // src/components/MobileNavbar.jsx
-import { Home, ChefHat, Coffee, User, Plus } from 'lucide-react';
+import { Home, Moon, Ghost, User, Plus } from 'lucide-react';
 
 export default function MobileNavbar({ currentPage, onNavigate, onCreateRecipe }) {
   const navItems = [
-    { id: 'home', label: 'Beranda', icon: Home },
-    { id: 'makanan', label: 'Makanan', icon: ChefHat },
-    { id: 'minuman', label: 'Minuman', icon: Coffee },
-    { id: 'profile', label: 'Profile', icon: User }
+    { id: 'home', icon: Home },
+    { id: 'makanan', icon: Moon }, 
+    { id: 'minuman', icon: Ghost },  
+    { id: 'profile', icon: User }
   ];
 
   return (
@@ -22,7 +22,7 @@ export default function MobileNavbar({ currentPage, onNavigate, onCreateRecipe }
       )}
 
       {/* Bottom Navigation */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 px-4 py-1 z-50">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-orange-500/20 backdrop-blur-md border-t border-orange-200 px-4 py-1 z-50">
       <div className="flex items-center justify-around max-w-sm mx-auto">
         {navItems.map((item) => {
           const IconComponent = item.icon;

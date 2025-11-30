@@ -1,5 +1,5 @@
 // src/components/makanan/RecipeGrid.jsx
-import { Clock, Star, ChefHat } from 'lucide-react';
+import { Clock, Star, Moon } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import FavoriteButton from '../common/FavoriteButton';
 
@@ -86,7 +86,7 @@ export default function RecipeGrid({ recipes, onRecipeClick }) {
                     <span className="font-medium">{recipe.prep_time}</span>
                   </div>
                   <div className="flex items-center space-x-1 md:space-x-2 bg-white/70 px-2 md:px-3 py-1 md:py-2 rounded-full">
-                    <ChefHat className="w-3 h-3 md:w-4 md:h-4" />
+                    <Moon className="w-3 h-3 md:w-4 md:h-4" />
                     <span className="font-medium">{recipe.difficulty}</span>
                   </div>
                 </div>
