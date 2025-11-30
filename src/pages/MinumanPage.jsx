@@ -1,6 +1,6 @@
 // src/pages/MinumanPage.jsx
 import { useState } from "react";
-import { useBlogPosts } from "../hooks/useBlogPosts";
+import { useRecipes } from "../hooks/useRecipes.js";
 import RecipeGrid from "../components/minuman/RecipeGrid";
 import AdvancedFilter from "../components/common/AdvancedFilter.jsx";
 
