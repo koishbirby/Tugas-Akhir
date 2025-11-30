@@ -15,7 +15,7 @@ export default function MinumanPage({ onRecipeClick }) {
   const [page, setPage] = useState(1);
 
   // Fetch blog posts from Supabase with all filters
-  const { posts, loading, error, pagination, refetch } = useBlogPosts({
+  const { posts, loading, error, pagination, refetch } = useRecipes({
     category: "minuman",
     search: searchQuery || undefined,
     page,
