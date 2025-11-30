@@ -1,3 +1,4 @@
+
 // src/components/recipe/RecipeDetail.jsx
 import { useState } from "react";
 import { useRecipe } from "../../hooks/useRecipes";
@@ -174,59 +175,41 @@ export default function RecipeDetail({
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20">
-      {/* Header */}
-      <div className="sticky top-0 z-10 bg-white/80 backdrop-blur border-b border-gray-200">
-        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
-          <button
-            onClick={onBack}
-            className="flex items-center gap-2 text-gray-700 hover:text-gray-900"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            <span className="font-medium">Back</span>
-          </button>
+    <div className="max-w-3xl mx-auto px-4 py-10">
 
-          {onEdit && (
-            <button
-              onClick={() => onEdit(recipeId)}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-            >
-              Edit
-            </button>
-          )}
+      {/* Title */}
+      <h1 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">
+        {post.title}
+      </h1>
+
+      {/* Author */}
+      <p className="text-slate-600 text-sm mb-6">
+        Ditulis oleh <span className="font-semibold">{post.author}</span>
+      </p>
+
+      {/* Images (if any) */}
+      {post.images && post.images.length > 0 && (
+        <div className="space-y-4 mb-8">
+
+          {post.images.map((imgUrl, index) => (
+            <img
+              key={index}
+              src={imgUrl}
+              alt={`Blog image ${index + 1}`}
+              className="w-full rounded-xl shadow-md object-cover"
+            />
+          ))}
+
         </div>
-      </div>
+      )}
 
-      {/* Main Content */}
-      <main className="max-w-3xl mx-auto px-4 py-10">
-        {/* Blog Title */}
-        <h1 className="text-4xl font-bold text-gray-900 mb-4 leading-tight">
-          {recipe.title}
-        </h1>
+      {/* Blog Content */}
+      <div
+        className="prose prose-slate max-w-none"
+        dangerouslySetInnerHTML={{ __html: post.content }}
+      />
 
-        {/* Author + Date */}
-        <div className="flex items-center gap-3 mb-8">
-          <div className="w-10 h-10 bg-gray-300 rounded-full"></div>
-          <div>
-            <p className="font-semibold text-gray-800">{recipe.author || "Unknown Author"}</p>
-            <p className="text-gray-500 text-sm">{formatDate(recipe.created_at)}</p>
-          </div>
-        </div>
-
-        {/* Featured Image (optional, safe even if missing) */}
-        {recipe.image_url && (
-          <img
-            src={recipe.image_url}
-            alt={recipe.title}
-            className="w-full rounded-xl mb-10 shadow-md"
-          />
-        )}
-
-        {/* Blog Content */}
-        <article className="prose prose-lg max-w-none text-gray-800 leading-relaxed">
-          <div dangerouslySetInnerHTML={{ __html: recipe.content }} />
-        </article>
-      </main>
     </div>
   );
+
 }
