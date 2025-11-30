@@ -1,6 +1,6 @@
 // src/pages/MinumanPage.jsx
 import { useState } from "react";
-import { useRecipes } from "../hooks/useRecipes";
+import { useBlogPosts } from "../hooks/useBlogPosts";
 import RecipeGrid from "../components/minuman/RecipeGrid";
 import AdvancedFilter from "../components/common/AdvancedFilter.jsx";
 
@@ -14,15 +14,12 @@ export default function MinumanPage({ onRecipeClick }) {
   });
   const [page, setPage] = useState(1);
 
-  // Fetch recipes from API with all filters
-  const { recipes, loading, error, pagination, refetch } = useRecipes({
-    category: "minuman",
+  // Fetch blog posts from Supabase with all filters
+  const { posts, loading, error, pagination, refetch } = useBlogPosts({
+    category: "Travel",
     search: searchQuery || undefined,
-    difficulty: filters.difficulty || undefined,
     page,
     limit: 12,
-    sort_by: filters.sortBy,
-    order: filters.order,
   });
 
   const handleSearchChange = (query) => {

@@ -1,13 +1,12 @@
-import { apiClient } from '../config/api';
+import { supabase } from '../config/supabaseClient';
 
 class RecipeService {
   /**
-   * Get all recipes with optional filters
+   * Get all recipes from Supabase with optional filters
    * @param {Object} params - Query parameters
    * @param {number} params.page - Page number (default: 1)
    * @param {number} params.limit - Items per page (default: 10)
-   * @param {string} params.category - Filter by category: 'makanan' | 'minuman'
-   * @param {string} params.difficulty - Filter by difficulty: 'mudah' | 'sedang' | 'sulit'
+   * @param {string} params.category - Filter by category
    * @param {string} params.search - Search in name/description
    * @param {string} params.sort_by - Sort by field (default: 'created_at')
    * @param {string} params.order - Sort order: 'asc' | 'desc' (default: 'desc')
@@ -15,18 +14,66 @@ class RecipeService {
    */
   async getRecipes(params = {}) {
     try {
-      const response = await apiClient.get('/api/v1/recipes', { params });
+      const { category, search, page = 1, limit = 10, sort_by = 'created_at', order = 'desc' } = params;
       
-      // If apiClient returns data directly due to response interceptor
-      if (response.success !== undefined) {
-        return response;
+      if (!supabase) {
+        return {
+          success: false,
+          data: null,
+          pagination: null,
+          message: 'Supabase client not initialized',
+          error: 'Supabase client not initialized'
+        };
       }
-      
-      // Wrap successful response
+
+      let query = supabase.from('recipes').select('*', { count: 'exact' });
+
+      // Apply category filter
+      if (category) {
+        query = query.eq('category', category);
+      }
+
+      // Apply search filter
+      if (search) {
+        query = query.or(
+          `name.ilike.%${search}%,description.ilike.%${search}%`
+        );
+      }
+
+      // Apply sorting
+      query = query.order(sort_by, { ascending: order === 'asc' });
+
+      // Apply pagination
+      const from = (page - 1) * limit;
+      const to = from + limit - 1;
+      query = query.range(from, to);
+
+      const { data, error, count } = await query;
+
+      if (error) {
+        console.error('Supabase fetch error:', error);
+        return {
+          success: false,
+          data: null,
+          pagination: null,
+          message: `Failed to fetch recipes: ${error.message}`,
+          error: `Failed to fetch recipes: ${error.message}`
+        };
+      }
+
+      // Calculate pagination
+      const total_pages = Math.ceil((count || 0) / limit);
+      const pagination = {
+        page,
+        limit,
+        total: count || 0,
+        total_pages
+      };
+
       return {
         success: true,
-        data: response.data || response,
-        pagination: response.pagination || null,
+        data: data || [],
+        pagination,
         message: null,
         error: null
       };
@@ -49,19 +96,36 @@ class RecipeService {
    */
   async getRecipeById(id) {
     try {
-      const response = await apiClient.get(`/api/v1/recipes/${id}`);
-      
-      // If apiClient returns data directly due to response interceptor
-      if (response.success !== undefined) {
-        return response;
+      if (!supabase) {
+        return { 
+          success: false, 
+          data: null, 
+          message: 'Supabase client not initialized',
+          error: 'Supabase client not initialized'
+        };
       }
-      
-      // Wrap successful response
-      return {
-        success: true,
-        data: response.data || response,
+
+      const { data, error } = await supabase
+        .from('recipes')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+      if (error) {
+        console.error('Supabase fetch error:', error);
+        return {
+          success: false,
+          data: null,
+          message: `Failed to fetch recipe: ${error.message}`,
+          error: `Failed to fetch recipe: ${error.message}`
+        };
+      }
+
+      return { 
+        success: true, 
+        data, 
         message: null,
-        error: null
+        error: null 
       };
     } catch (error) {
       console.error('Recipe service error:', error);
@@ -81,19 +145,36 @@ class RecipeService {
    */
   async createRecipe(recipeData) {
     try {
-      const response = await apiClient.post('/api/v1/recipes', recipeData);
-      
-      // If apiClient returns data directly due to response interceptor
-      if (response.success !== undefined) {
-        return response;
+      if (!supabase) {
+        return { 
+          success: false, 
+          data: null, 
+          message: 'Supabase client not initialized',
+          error: 'Supabase client not initialized'
+        };
       }
-      
-      // Wrap successful response
-      return {
-        success: true,
-        data: response.data || response,
+
+      const { data, error } = await supabase
+        .from('recipes')
+        .insert([recipeData])
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Supabase insert error:', error);
+        return {
+          success: false,
+          data: null,
+          message: `Failed to create recipe: ${error.message}`,
+          error: `Failed to create recipe: ${error.message}`
+        };
+      }
+
+      return { 
+        success: true, 
+        data, 
         message: null,
-        error: null
+        error: null 
       };
     } catch (error) {
       console.error('Recipe service error:', error);
@@ -107,26 +188,44 @@ class RecipeService {
   }
 
   /**
-   * Update existing recipe (full replacement)
+   * Update existing recipe
    * @param {string} id - Recipe ID
-   * @param {Object} recipeData - Complete recipe data (all fields required)
+   * @param {Object} recipeData - Recipe data
    * @returns {Promise<Object>} - { success, data, message, error }
    */
   async updateRecipe(id, recipeData) {
     try {
-      const response = await apiClient.put(`/api/v1/recipes/${id}`, recipeData);
-      
-      // If apiClient returns data directly due to response interceptor
-      if (response.success !== undefined) {
-        return response;
+      if (!supabase) {
+        return { 
+          success: false, 
+          data: null, 
+          message: 'Supabase client not initialized',
+          error: 'Supabase client not initialized'
+        };
       }
-      
-      // Wrap successful response
-      return {
-        success: true,
-        data: response.data || response,
+
+      const { data, error } = await supabase
+        .from('recipes')
+        .update(recipeData)
+        .eq('id', id)
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Supabase update error:', error);
+        return {
+          success: false,
+          data: null,
+          message: `Failed to update recipe: ${error.message}`,
+          error: `Failed to update recipe: ${error.message}`
+        };
+      }
+
+      return { 
+        success: true, 
+        data, 
         message: null,
-        error: null
+        error: null 
       };
     } catch (error) {
       console.error('Recipe service error:', error);
@@ -140,26 +239,44 @@ class RecipeService {
   }
 
   /**
-   * Partially update recipe (only send fields to update)
+   * Partially update recipe
    * @param {string} id - Recipe ID
-   * @param {Object} partialData - Partial recipe data (only fields to update)
+   * @param {Object} partialData - Partial recipe data
    * @returns {Promise<Object>} - { success, data, message, error }
    */
   async patchRecipe(id, partialData) {
     try {
-      const response = await apiClient.patch(`/api/v1/recipes/${id}`, partialData);
-      
-      // If apiClient returns data directly due to response interceptor
-      if (response.success !== undefined) {
-        return response;
+      if (!supabase) {
+        return { 
+          success: false, 
+          data: null, 
+          message: 'Supabase client not initialized',
+          error: 'Supabase client not initialized'
+        };
       }
-      
-      // Wrap successful response
-      return {
-        success: true,
-        data: response.data || response,
+
+      const { data, error } = await supabase
+        .from('recipes')
+        .update(partialData)
+        .eq('id', id)
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Supabase update error:', error);
+        return {
+          success: false,
+          data: null,
+          message: `Failed to update recipe: ${error.message}`,
+          error: `Failed to update recipe: ${error.message}`
+        };
+      }
+
+      return { 
+        success: true, 
+        data, 
         message: null,
-        error: null
+        error: null 
       };
     } catch (error) {
       console.error('Recipe service error:', error);
@@ -179,18 +296,32 @@ class RecipeService {
    */
   async deleteRecipe(id) {
     try {
-      const response = await apiClient.delete(`/api/v1/recipes/${id}`);
-      
-      // If apiClient returns data directly due to response interceptor
-      if (response.success !== undefined) {
-        return response;
+      if (!supabase) {
+        return { 
+          success: false, 
+          message: 'Supabase client not initialized',
+          error: 'Supabase client not initialized'
+        };
       }
-      
-      // Wrap successful response
-      return {
-        success: true,
+
+      const { error } = await supabase
+        .from('recipes')
+        .delete()
+        .eq('id', id);
+
+      if (error) {
+        console.error('Supabase delete error:', error);
+        return {
+          success: false,
+          message: `Failed to delete recipe: ${error.message}`,
+          error: `Failed to delete recipe: ${error.message}`
+        };
+      }
+
+      return { 
+        success: true, 
         message: null,
-        error: null
+        error: null 
       };
     } catch (error) {
       console.error('Recipe service error:', error);
