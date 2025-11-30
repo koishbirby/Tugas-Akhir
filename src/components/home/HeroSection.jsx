@@ -57,73 +57,106 @@ export default function HeroSection() {
       <div className="absolute bottom-1/4 left-16 w-20 h-20 bg-gradient-to-r from-indigo-200/25 to-blue-200/25 rounded-full blur-2xl animate-pulse" style={{ animationDelay: '3s' }} />
       <div className="absolute top-1/2 left-1/4 w-16 h-16 bg-gradient-to-r from-blue-300/15 to-purple-300/15 rounded-full blur-2xl animate-pulse" style={{ animationDelay: '4s' }} />
 
-      <div className="md:hidden relative z-10 w-full px-4 py-8 text-center">
-        <div className="mb-4">
-          <div className="relative inline-block">
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-400 via-blue-300 to-blue-200 transform -skew-y-1 rounded-lg opacity-80"></div>
-            <h1 className="relative text-2xl font-bold text-slate-800 px-4 py-2">
-              The Season of Halloween is Upon Us All!
-            </h1>
+      {/* MOBILE — Featured Myth Section (Matches Desktop) */}
+      <div className="md:hidden relative z-10 w-full px-4 py-10">
+
+        {/* Countdown Mobile */}
+        <h1 className="text-lg font-semibold text-orange-400 text-center drop-shadow mb-10">
+          🎃 Halloween Countdown: {countdown}
+        </h1>
+
+        {/* Tarot Card — Mobile */}
+        <motion.div
+          initial={{ opacity: 0, y: -40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="bg-black/40 backdrop-blur-xl border border-white/20 rounded-2xl p-5 shadow-2xl 
+                    w-full max-w-sm mx-auto mb-8 cursor-pointer"
+          onClick={() =>
+            setModalWitness({
+              title: "The Headless Horseman",
+              description:
+                "I saw it on a foggy October night — a rider with no head, galloping through the old forest road. The horse's eyes burned like embers, and the sound of hooves echoed long after it passed.",
+              author: "- Anonymous Villager, 1823",
+              proofImages: [
+                "https://images.unsplash.com/photo-1606788075760-0b4f5f6f8d89?w=200&h=150&fit=crop",
+                "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=200&h=150&fit=crop",
+                "https://images.unsplash.com/photo-1522199755839-a2bacb67c546?w=200&h=150&fit=crop",
+                "https://images.unsplash.com/photo-1519985176271-adb1088fa94c?w=200&h=150&fit=crop"
+              ]
+            })
+          }
+        >
+          <img 
+            src="https://images.unsplash.com/photo-1485745631157-311b6f1f6e1c"
+            className="w-full h-[420px] object-cover rounded-xl mb-5"
+          />
+          <h2 className="text-xl font-bold text-white text-center mb-1">
+            The Headless Horseman
+          </h2>
+          <p className="text-blue-300 text-center text-sm">
+            Global Myth
+          </p>
+        </motion.div>
+
+
+        {/* Witness Report — Mobile */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1.0, ease: "easeOut" }}
+          className="bg-black/40 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl 
+                    w-full max-w-sm mx-auto p-5 cursor-pointer"
+          onClick={() =>
+            setModalWitness({
+              title: "Witness Report",
+              description:
+                "I saw it on a foggy October night — a rider with no head, galloping through the old forest road. The horse's eyes burned like embers, and the sound of hooves echoed long after it passed. I don't know what it wanted… but I pray we never meet again.",
+              author: "- Anonymous Villager, 1823",
+              proofImages: [
+                "https://images.unsplash.com/photo-1606788075760-0b4f5f6f8d89?w=200&h=150&fit=crop",
+                "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=200&h=150&fit=crop",
+                "https://images.unsplash.com/photo-1522199755839-a2bacb67c546?w=200&h=150&fit=crop",
+                "https://images.unsplash.com/photo-1519985176271-adb1088fa94c?w=200&h=150&fit=crop"
+              ]
+            })
+          }
+        >
+          <h3 className="text-2xl font-semibold text-orange-300 mb-4">
+            📜 Witness Report
+          </h3>
+
+          <p className="text-slate-200 leading-relaxed mb-4 line-clamp-4">
+            “I saw it on a foggy October night — a rider with no head, galloping through 
+            the old forest road. The horse's eyes burned like embers, and the sound of 
+            hooves echoed long after it passed. I don't know what it wanted… but I pray 
+            we never meet again.”
+          </p>
+
+          <p className="text-slate-400 text-sm italic mb-3">
+            - Anonymous Villager, 1823
+          </p>
+
+          {/* Proof images mobile */}
+          <div className="flex gap-3 overflow-x-auto pb-1">
+            {[
+              "https://images.unsplash.com/photo-1606788075760-0b4f5f6f8d89?w=200&h=150&fit=crop",
+              "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=200&h=150&fit=crop",
+              "https://images.unsplash.com/photo-1522199755839-a2bacb67c546?w=200&h=150&fit=crop",
+              "https://images.unsplash.com/photo-1519985176271-adb1088fa94c?w=200&h=150&fit=crop"
+            ].map((src, index) => (
+              <div key={index} className="flex-shrink-0 w-24 h-24 rounded-lg overflow-hidden border border-white/20 shadow-sm">
+                <img 
+                  src={src}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            ))}
           </div>
-          <h1 className="text-xl font-semibold text-orange-400 drop-shadow mb-6">🎃 Halloween Countdown: {countdown}</h1>
-        </div>
+        </motion.div>
 
-        <div className="mb-8 max-w-xs mx-auto">
-          <div className="space-y-3">
-            {/* Top Image - Mobile Grid */}
-            <div className="relative group">
-              <div className="bg-white/15 backdrop-blur-2xl border border-white/25 rounded-2xl overflow-hidden shadow-xl shadow-blue-500/10 hover:shadow-blue-500/20 transition-all duration-500 hover:scale-105">
-                <div className="w-full h-40 overflow-hidden">
-                  <img 
-                    src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                    alt="Featured Recipe"
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Bottom Images - Mobile Grid */}
-            <div className="grid grid-cols-2 gap-3">
-              <div className="relative group">
-                <div className="bg-white/15 backdrop-blur-2xl border border-white/25 rounded-2xl overflow-hidden shadow-xl shadow-indigo-500/10 hover:shadow-indigo-500/20 transition-all duration-500 hover:scale-105">
-                  <div className="w-full h-20 overflow-hidden">
-                    <img 
-                      src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=200&h=150&fit=crop&crop=center"
-                      alt="Featured Recipe 2"
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="relative group">
-                <div className="bg-white/15 backdrop-blur-2xl border border-white/25 rounded-2xl overflow-hidden shadow-xl shadow-purple-500/10 hover:shadow-purple-500/20 transition-all duration-500 hover:scale-105">
-                  <div className="w-full h-20 overflow-hidden">
-                    <img 
-                      src="https://images.unsplash.com/photo-1544145945-f90425340c7e?w=200&h=150&fit=crop&crop=center"
-                      alt="Featured Drink"
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="flex flex-col space-y-3 max-w-xs mx-auto">
-          <button className="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-6 py-3 rounded-2xl font-semibold shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 flex items-center justify-center space-x-2 text-sm">
-            <ChefHat className="w-4 h-4" />
-            <span>Jelajahi Resep</span>
-          </button>
-          <button className="bg-white/25 backdrop-blur-xl border border-white/40 text-slate-700 px-6 py-3 rounded-2xl font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 flex items-center justify-center space-x-2 text-sm">
-            <Play className="w-4 h-4" />
-            <span>Video Tutorial</span>
-          </button>
-        </div>
       </div>
+
 
       <div className="hidden md:block relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="flex justify-center gap-10 mt-6 flex-wrap">
