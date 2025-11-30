@@ -16,7 +16,7 @@ export default function MakananPage({ onRecipeClick }) {
 
   // Fetch blog posts from Supabase with all filters
   const { posts, loading, error, pagination, refetch } = useBlogPosts({
-    category: "Food",
+    category: "makanan",
     search: searchQuery || undefined,
     page,
     limit: 12,

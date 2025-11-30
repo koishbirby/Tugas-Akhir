@@ -16,7 +16,7 @@ export default function MinumanPage({ onRecipeClick }) {
 
   // Fetch blog posts from Supabase with all filters
   const { posts, loading, error, pagination, refetch } = useBlogPosts({
-    category: "Travel",
+    category: "minuman",
     search: searchQuery || undefined,
     page,
     limit: 12,
@@ -34,10 +34,10 @@ export default function MinumanPage({ onRecipeClick }) {
 
   // Client-side filter for prep time (since API might not support it)
   const filteredRecipes = filters.prepTimeMax
-    ? recipes.filter(
-        (recipe) => recipe.prep_time <= parseInt(filters.prepTimeMax)
+    ? posts.filter(
+        (post) => post.prep_time <= parseInt(filters.prepTimeMax)
       )
-    : recipes;
+    : posts;
 
   return (
     <div className="min-h-screen bg-linear-to-br from-green-50 via-white to-cyan-50 pb-20 md:pb-8">
