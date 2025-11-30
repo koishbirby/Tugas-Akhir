@@ -67,7 +67,7 @@ export default function AdvancedFilter({ onFilterChange, onSearchChange, initial
           type="text"
           value={searchQuery}
           onChange={(e) => handleSearchChange(e.target.value)}
-          placeholder="Cari resep..."
+          placeholder="Find Your Doom..."
           className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm"
         />
       </div>
