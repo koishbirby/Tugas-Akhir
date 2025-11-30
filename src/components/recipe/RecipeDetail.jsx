@@ -1,7 +1,7 @@
 
 // src/components/recipe/RecipeDetail.jsx
 import { useState } from "react";
-import { useRecipe } from "../../hooks/useRecipes";
+import { useBlogPosts } from "../../hooks/useBlogPosts";
 import { useReviews, useCreateReview } from "../../hooks/useReviews";
 import { useIsFavorited } from "../../hooks/useFavorites";
 import { getUserIdentifier } from "../../hooks/useFavorites";
@@ -36,7 +36,7 @@ export default function RecipeDetail({
     recipe,
     loading: recipeLoading,
     error: recipeError,
-  } = useRecipe(recipeId);
+  } = useBlogPosts(recipeId);
   const {
     reviews,
     loading: reviewsLoading,
