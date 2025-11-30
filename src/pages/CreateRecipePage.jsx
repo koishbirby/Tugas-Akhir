@@ -11,7 +11,7 @@ export default function CreateRecipePage({ onBack, onSuccess }) {
     content: '',
     excerpt: '',
     author: '',
-    category: 'Technology',
+    category: '',
   });
 
   const [submitting, setSubmitting] = useState(false);
@@ -249,7 +249,7 @@ export default function CreateRecipePage({ onBack, onSuccess }) {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
+                <label class  Name="block text-sm font-medium text-slate-700 mb-2">
                   Kategori
                 </label>
                 <select
@@ -258,13 +258,8 @@ export default function CreateRecipePage({ onBack, onSuccess }) {
                   onChange={handleChange}
                   className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 >
-                  <option value="Technology">Teknologi</option>
-                  <option value="Travel">Perjalanan</option>
-                  <option value="Food">Makanan</option>
-                  <option value="Lifestyle">Gaya Hidup</option>
-                  <option value="Education">Pendidikan</option>
-                  <option value="Health">Kesehatan</option>
-                  <option value="Other">Lainnya</option>
+                  <option value="makanan">Makanan</option>
+                  <option value="minuman">Minuman</option>
                 </select>
               </div>
             </div>
