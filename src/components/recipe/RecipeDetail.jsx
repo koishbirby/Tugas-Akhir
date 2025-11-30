@@ -1,6 +1,6 @@
 // src/components/recipe/RecipeDetail.jsx
 import { useState } from "react";
-import { useBlogPosts } from "../../hooks/useBlogPosts";
+import { useRecipes } from "../../hooks/useRecipes";
 import { useReviews, useCreateReview } from "../../hooks/useReviews";
 import { useIsFavorited } from "../../hooks/useFavorites";
 import { getUserIdentifier } from "../../hooks/useFavorites";
@@ -35,7 +35,7 @@ export default function RecipeDetail({
     recipe,
     loading: recipeLoading,
     error: recipeError,
-  } = useBlogPosts(recipeId);
+  } = useRecipes(recipeId);
   const {
     reviews,
     loading: reviewsLoading,
@@ -174,33 +174,40 @@ export default function RecipeDetail({
   }
 
   return (
-    <div className="max-w-3xl mx-auto p-4">
+    <div className="max-w-3xl mx-auto px-4 py-10">
       {/* Title */}
-      <h1 className="text-3xl font-bold mb-2">{recipe.title}</h1>
+      <h1 className="text-3xl font-bold mb-2">{post.title}</h1>
 
       {/* Author */}
-      <p className="text-gray-500 mb-6">
-        By {recipe.author || "Unknown"}
-      </p>
+      <p className="text-gray-500 mb-4">By {post.author || "Unknown"}</p>
 
-      {/* Blog Content */}
-      <div className="prose prose-lg max-w-none">
-        {recipe.content}
-      </div>
-
-      {/* Images (future feature) */}
-      {recipe.images?.length > 0 && (
-        <div className="mt-6 space-y-4">
-          {recipe.images.map((img, index) => (
+      {/* Images (if any) */}
+      {post.images?.length > 0 && (
+        <div className="mb-6 space-y-4">
+          {post.images.map((imgUrl, index) => (
             <img
               key={index}
-              src={img}
+              src={imgUrl}
+              alt={`Blog image ${index + 1}`}
               className="rounded-xl"
-              alt={`blog image ${index + 1}`}
             />
           ))}
         </div>
       )}
+
+      {/* Blog Content */}
+      <div
+        className="prose prose-lg max-w-none"
+        dangerouslySetInnerHTML={{ __html: post.content }}
+      />
+
+      {/* Favorite button */}
+      <div className="mt-6">
+        <FavoriteButton
+          isFavorited={isFavorited}
+          onClick={toggleFavorite}
+        />
+      </div>
     </div>
   );
 }
