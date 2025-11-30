@@ -1,13 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
-import { witnessReports } from "../../data/report";
+import { witnessReports } from "../../data/witnessReports";
 import { BookText, Image as ImageIcon } from "lucide-react";
 import WitnessPopUp from '../modals/WitnessModal';
-import { motion } from 'framer-motion';
 
 export default function FeaturedMythsSection() {
   const [visibleCards, setVisibleCards] = useState(new Set());
-  const [modalWitness, setModalWitness] = useState(null);
   const cardRefs = useRef([]);
+  const [modalMyth, setModalMyth] = useState(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
@@ -39,7 +38,7 @@ export default function FeaturedMythsSection() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
         {witnessReports.map((report, index) => (
-          <motion.div
+          <div
             key={report.id}
             ref={(el) => (cardRefs.current[index] = el)}
             className={`group transform transition-all duration-700 ${
@@ -49,17 +48,10 @@ export default function FeaturedMythsSection() {
             }`}
           >
             <div
-              onClick={() =>
-                setModalWitness({
-                  title: report.title,
-                  description: report.description,
-                  author: report.author,
-                  proofImages: report.proofImages || [],
-                })
-              }
+              onClick={() => setModalMyth(report)}
               className="relative bg-white/10 backdrop-blur-xl border border-white/20
-                         rounded-2xl overflow-hidden shadow-xl hover:bg-white/20 
-                         hover:scale-[1.02] cursor-pointer transition-all"
+                rounded-2xl overflow-hidden shadow-xl hover:bg-white/20 
+                hover:scale-[1.02] cursor-pointer transition-all"
             >
               <div className="flex">
                 <div className="h-28 w-28 md:h-48 md:w-48 overflow-hidden">
@@ -75,6 +67,7 @@ export default function FeaturedMythsSection() {
                     <span className="text-xs font-semibold bg-purple-900/40 px-3 py-1 rounded-full text-purple-200">
                       Myth Report
                     </span>
+
                     <div className="flex items-center gap-1 text-xs text-purple-200">
                       <ImageIcon className="w-3 h-3" />
                       {report.proofImages.length}
@@ -95,15 +88,14 @@ export default function FeaturedMythsSection() {
                 </div>
               </div>
             </div>
-          </motion.div>
+          </div>
         ))}
       </div>
 
-      {/* Modal */}
-      {modalWitness && (
+      {modalMyth && (
         <WitnessPopUp
-          data={modalWitness}
-          onClose={() => setModalWitness(null)}
+          modal={modalMyth}
+          onClose={() => setModalMyth(null)}
         />
       )}
     </section>
