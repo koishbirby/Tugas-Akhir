@@ -21,7 +21,7 @@ export default function EditRecipePage() {
       setLoading(true);
       try {
         const { data, error } = await supabase
-          .from('recipes') // assuming your table is 'recipes'
+          .from('blog_posts')
           .select('title, content')
           .eq('id', id)
           .single();
@@ -33,7 +33,7 @@ export default function EditRecipePage() {
           setContent(data.content || '');
         }
       } catch (err) {
-        setError(err.message || 'Gagal memuat resep');
+        setError(err.message || 'Gagal memuat post');
       } finally {
         setLoading(false);
       }
@@ -53,16 +53,19 @@ export default function EditRecipePage() {
 
     setSaving(true);
     try {
-      const updates = { title: title.trim(), content };
+      const updates = { 
+        title: title.trim(), 
+        content: content || null 
+      };
 
       const { error } = await supabase
-        .from('recipes')
+        .from('blog_posts')
         .update(updates)
         .eq('id', id);
 
       if (error) throw error;
 
-      navigate(-1); // go back after saving
+      navigate(-1);
     } catch (err) {
       setError(err.message || 'Gagal menyimpan perubahan');
     } finally {
@@ -83,7 +86,7 @@ export default function EditRecipePage() {
 
   return (
     <div className="max-w-3xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-4">Edit Resep</h1>
+      <h1 className="text-2xl font-bold mb-4">Edit Post</h1>
 
       {error && (
         <div className="mb-4 text-red-600 bg-red-50 p-3 rounded">{error}</div>
@@ -99,7 +102,7 @@ export default function EditRecipePage() {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             className="w-full px-4 py-3 border rounded-lg"
-            placeholder="Judul resep"
+            placeholder="Judul post"
           />
         </div>
 
