@@ -21,6 +21,7 @@ import {
   Trash2,
 } from "lucide-react";
 import recipeService from "../../services/recipeService";
+import blogPostService from "../../services/blogPostService";
 import ConfirmModal from "../modals/ConfirmModal";
 import FavoriteButton from "../common/FavoriteButton";
 import userService from "../../services/userService";
@@ -36,6 +37,9 @@ export default function RecipeDetail({
     loading: recipeLoading,
     error: recipeError,
   } = useRecipe(recipeId);
+  const [blogPost, setBlogPost] = useState(null);
+  const [blogLoading, setBlogLoading] = useState(false);
+  const [blogError, setBlogError] = useState(null);
   const {
     reviews,
     loading: reviewsLoading,
@@ -124,8 +128,33 @@ export default function RecipeDetail({
       setDeleting(false);
     }
   };
+  useEffect(() => {
+    // If there's no recipe returned from recipes table, try fetching as blog post
+    const tryLoadBlog = async () => {
+      if (!recipe && !recipeLoading && recipeId) {
+        try {
+          setBlogLoading(true);
+          setBlogError(null);
+          const res = await blogPostService.getBlogPostById(recipeId);
+          if (res.success && res.data) {
+            setBlogPost(res.data);
+          } else {
+            setBlogPost(null);
+            setBlogError(res.error || 'Blog post not found');
+          }
+        } catch (err) {
+          setBlogError(err.message || 'Failed to load blog post');
+          setBlogPost(null);
+        } finally {
+          setBlogLoading(false);
+        }
+      }
+    };
 
-  if (recipeLoading) {
+    tryLoadBlog();
+  }, [recipe, recipeLoading, recipeId]);
+
+  if (recipeLoading || blogLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -138,13 +167,13 @@ export default function RecipeDetail({
     );
   }
 
-  if (recipeError) {
+  if (recipeError && blogError) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
         <div className="text-center max-w-md">
           <div className="bg-red-50 border border-red-200 rounded-2xl p-6">
             <p className="text-red-600 font-semibold mb-2">Terjadi Kesalahan</p>
-            <p className="text-red-500 mb-4">{recipeError}</p>
+            <p className="text-red-500 mb-4">{recipeError || blogError}</p>
             <button
               onClick={onBack}
               className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
@@ -156,19 +185,39 @@ export default function RecipeDetail({
       </div>
     );
   }
-
-  if (!recipe) {
+  // If recipe is not found but blogPost was fetched, render blog view
+  if (!recipe && blogPost) {
+    const post = blogPost;
     return (
-      <div className="min-h-screen flex items-center justify-center p-4">
-        <div className="text-center">
-          <p className="text-slate-600">Resep tidak ditemukan</p>
-          <button
-            onClick={onBack}
-            className={`mt-4 px-4 py-2 bg-${colors.primary}-600 text-white rounded-lg hover:bg-${colors.primary}-700 transition-colors`}
-          >
-            Kembali
-          </button>
-        </div>
+      <div className={`min-h-screen bg-gradient-to-br ${colors.gradient} pb-20 md:pb-8`}>
+        <main className="max-w-3xl mx-auto px-4 py-8">
+          <div className="bg-white/80 rounded-3xl p-6 md:p-8 shadow-lg border border-white/40">
+            <h1 className="text-3xl md:text-4xl font-bold text-slate-800 mb-2">{post.title}</h1>
+            <div className="flex items-center gap-3 text-sm text-slate-500 mb-4">
+              <span>oleh <strong className="text-slate-700">{post.author || 'Anonim'}</strong></span>
+              <span>•</span>
+              <span>{formatDate(post.created_at)}</span>
+            </div>
+
+            {/* Images gallery */}
+            {post.images && Array.isArray(post.images) && post.images.length > 0 && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
+                {post.images.map((src, idx) => (
+                  <div key={idx} className="overflow-hidden rounded-xl border">
+                    <img src={src} alt={`img-${idx}`} className="w-full h-40 object-cover" />
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Content - render paragraphs */}
+            <article className="prose prose-lg max-w-none text-slate-700">
+              {post.content.split(/\n\n+/).map((para, i) => (
+                <p key={i}>{para}</p>
+              ))}
+            </article>
+          </div>
+        </main>
       </div>
     );
   }

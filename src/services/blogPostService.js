@@ -170,14 +170,49 @@ class BlogPostService {
         content: updates.content?.trim(),
         excerpt: updates.excerpt?.trim() || null,
         author: updates.author?.trim() || null,
-        category: updates.category?.trim() || null
+        category: updates.category?.trim() || null,
+        // images will be set below if provided
       };
+
+      // If images (File objects) provided, upload them to Supabase storage
+      if (updates.images && Array.isArray(updates.images) && updates.images.length > 0) {
+        const uploadedUrls = [];
+        const files = updates.images.slice(0, 3);
+
+        for (const file of files) {
+          try {
+            const ext = (file.name || '').split('.').pop();
+            const fileName = `${Date.now()}_${Math.random().toString(36).slice(2,8)}.${ext}`;
+            const path = `${fileName}`;
+
+            const { error: uploadError } = await supabase.storage
+              .from('blog_images')
+              .upload(path, file, { cacheControl: '3600', upsert: false });
+
+            if (uploadError) {
+              console.warn('Image upload failed for', file.name, uploadError.message);
+              continue;
+            }
+
+            const { data: publicData } = supabase.storage.from('blog_images').getPublicUrl(path);
+            if (publicData && publicData.publicUrl) {
+              uploadedUrls.push(publicData.publicUrl);
+            }
+          } catch (imgErr) {
+            console.warn('Image upload exception:', imgErr?.message || imgErr);
+          }
+        }
+
+        if (uploadedUrls.length > 0) {
+          blogPostUpdates.images = uploadedUrls;
+        }
+      }
 
       const { data, error } = await supabase
         .from('blog_posts')
         .update(blogPostUpdates)
         .eq('id', id)
-        .select('id, title, content, excerpt, author, category, created_at')
+        .select('id, title, content, excerpt, author, category, images, created_at')
         .single();
 
       if (error) {
