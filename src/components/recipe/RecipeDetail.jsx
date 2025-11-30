@@ -21,7 +21,6 @@ import {
   Trash2,
 } from "lucide-react";
 import recipeService from "../../services/recipeService";
-import blogPostService from "../../services/blogPostService";
 import ConfirmModal from "../modals/ConfirmModal";
 import FavoriteButton from "../common/FavoriteButton";
 import userService from "../../services/userService";
@@ -37,9 +36,6 @@ export default function RecipeDetail({
     loading: recipeLoading,
     error: recipeError,
   } = useRecipe(recipeId);
-  const [blogPost, setBlogPost] = useState(null);
-  const [blogLoading, setBlogLoading] = useState(false);
-  const [blogError, setBlogError] = useState(null);
   const {
     reviews,
     loading: reviewsLoading,
@@ -128,33 +124,8 @@ export default function RecipeDetail({
       setDeleting(false);
     }
   };
-  useEffect(() => {
-    // If there's no recipe returned from recipes table, try fetching as blog post
-    const tryLoadBlog = async () => {
-      if (!recipe && !recipeLoading && recipeId) {
-        try {
-          setBlogLoading(true);
-          setBlogError(null);
-          const res = await blogPostService.getBlogPostById(recipeId);
-          if (res.success && res.data) {
-            setBlogPost(res.data);
-          } else {
-            setBlogPost(null);
-            setBlogError(res.error || 'Blog post not found');
-          }
-        } catch (err) {
-          setBlogError(err.message || 'Failed to load blog post');
-          setBlogPost(null);
-        } finally {
-          setBlogLoading(false);
-        }
-      }
-    };
 
-    tryLoadBlog();
-  }, [recipe, recipeLoading, recipeId]);
-
-  if (recipeLoading || blogLoading) {
+  if (recipeLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -167,13 +138,13 @@ export default function RecipeDetail({
     );
   }
 
-  if (recipeError && blogError) {
+  if (recipeError) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
         <div className="text-center max-w-md">
           <div className="bg-red-50 border border-red-200 rounded-2xl p-6">
             <p className="text-red-600 font-semibold mb-2">Terjadi Kesalahan</p>
-            <p className="text-red-500 mb-4">{recipeError || blogError}</p>
+            <p className="text-red-500 mb-4">{recipeError}</p>
             <button
               onClick={onBack}
               className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
@@ -185,394 +156,84 @@ export default function RecipeDetail({
       </div>
     );
   }
-  // If recipe is not found but blogPost was fetched, render blog view
-  if (!recipe && blogPost) {
-    const post = blogPost;
+
+  if (!recipe) {
     return (
-      <div className={`min-h-screen bg-gradient-to-br ${colors.gradient} pb-20 md:pb-8`}>
-        <main className="max-w-3xl mx-auto px-4 py-8">
-          <div className="bg-white/80 rounded-3xl p-6 md:p-8 shadow-lg border border-white/40">
-            <h1 className="text-3xl md:text-4xl font-bold text-slate-800 mb-2">{post.title}</h1>
-            <div className="flex items-center gap-3 text-sm text-slate-500 mb-4">
-              <span>oleh <strong className="text-slate-700">{post.author || 'Anonim'}</strong></span>
-              <span>•</span>
-              <span>{formatDate(post.created_at)}</span>
-            </div>
-
-            {/* Images gallery */}
-            {post.images && Array.isArray(post.images) && post.images.length > 0 && (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
-                {post.images.map((src, idx) => (
-                  <div key={idx} className="overflow-hidden rounded-xl border">
-                    <img src={src} alt={`img-${idx}`} className="w-full h-40 object-cover" />
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {/* Content - render paragraphs */}
-            <article className="prose prose-lg max-w-none text-slate-700">
-              {post.content.split(/\n\n+/).map((para, i) => (
-                <p key={i}>{para}</p>
-              ))}
-            </article>
-          </div>
-        </main>
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <div className="text-center">
+          <p className="text-slate-600">Resep tidak ditemukan</p>
+          <button
+            onClick={onBack}
+            className={`mt-4 px-4 py-2 bg-${colors.primary}-600 text-white rounded-lg hover:bg-${colors.primary}-700 transition-colors`}
+          >
+            Kembali
+          </button>
+        </div>
       </div>
     );
   }
 
   return (
-    <div
-      className={`min-h-screen bg-gradient-to-br ${colors.gradient} pb-20 md:pb-8`}
-    >
-      {/* Delete Confirmation Modal */}
-      <ConfirmModal
-        isOpen={showDeleteModal}
-        onClose={() => setShowDeleteModal(false)}
-        onConfirm={handleDeleteRecipe}
-        title="Hapus Resep"
-        message={`Apakah Anda yakin ingin menghapus resep "${recipe?.name}"? Tindakan ini tidak dapat dibatalkan.`}
-        confirmText="Ya, Hapus"
-        cancelText="Batal"
-        variant="danger"
-        isLoading={deleting}
-      />
-
+    <div className="min-h-screen bg-gray-50 pb-20">
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-white/80 backdrop-blur-md border-b border-slate-200 shadow-sm">
+      <div className="sticky top-0 z-10 bg-white/80 backdrop-blur border-b border-gray-200">
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
           <button
             onClick={onBack}
-            className="flex items-center gap-2 text-slate-700 hover:text-slate-900 transition-colors"
+            className="flex items-center gap-2 text-gray-700 hover:text-gray-900"
           >
             <ArrowLeft className="w-5 h-5" />
-            <span className="font-medium">Kembali</span>
+            <span className="font-medium">Back</span>
           </button>
 
-          {/* Action Buttons */}
           {onEdit && (
-            <div className="flex gap-2">
-              <button
-                onClick={() => {
-                  console.log("🖱️ Edit button clicked in RecipeDetail");
-                  console.log("📝 Recipe ID:", recipeId);
-                  console.log("🔧 onEdit function:", onEdit);
-                  onEdit(recipeId);
-                }}
-                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                <Edit className="w-4 h-4" />
-                <span className="hidden md:inline">Edit</span>
-              </button>
-              <button
-                onClick={() => setShowDeleteModal(true)}
-                className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-              >
-                <Trash2 className="w-4 h-4" />
-                <span className="hidden md:inline">Hapus</span>
-              </button>
-            </div>
+            <button
+              onClick={() => onEdit(recipeId)}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            >
+              Edit
+            </button>
           )}
         </div>
       </div>
 
-      <main className="max-w-5xl mx-auto px-4 py-8">
-        {/* Recipe Header */}
-        <div className="bg-white/60 backdrop-blur-sm rounded-3xl overflow-hidden shadow-xl border border-white/40 mb-8">
-          {/* Hero Image */}
-          <div className="relative h-64 md:h-96 overflow-hidden">
-            <img
-              src={recipe.image_url}
-              alt={recipe.name}
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+      {/* Main Content */}
+      <main className="max-w-3xl mx-auto px-4 py-10">
+        {/* Blog Title */}
+        <h1 className="text-4xl font-bold text-gray-900 mb-4 leading-tight">
+          {recipe.title}
+        </h1>
 
-            {/* Favorite Button - Use component */}
-            <div className="absolute top-4 right-4 z-10">
-              <FavoriteButton recipeId={recipeId} size="lg" />
-            </div>
-
-            {/* Category Badge */}
-            <div className="absolute bottom-4 left-4">
-              <span
-                className={`${colors.text} ${colors.bg} px-4 py-2 rounded-full text-sm font-semibold`}
-              >
-                {category === "makanan" ? "Makanan" : "Minuman"}
-              </span>
-            </div>
-          </div>
-
-          {/* Recipe Info */}
-          <div className="p-6 md:p-8">
-            <h1 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">
-              {recipe.name}
-            </h1>
-
-            {recipe.description && (
-              <p className="text-slate-600 text-lg mb-6 leading-relaxed">
-                {recipe.description}
-              </p>
-            )}
-
-            {/* Stats Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="bg-white/70 backdrop-blur p-4 rounded-xl border border-white/60 text-center">
-                <Clock
-                  className={`w-6 h-6 mx-auto mb-2 text-${colors.primary}-600`}
-                />
-                <p className="text-xs text-slate-500 mb-1">Persiapan</p>
-                <p className="font-semibold text-slate-700">
-                  {recipe.prep_time}
-                </p>
-              </div>
-              <div className="bg-white/70 backdrop-blur p-4 rounded-xl border border-white/60 text-center">
-                <Clock
-                  className={`w-6 h-6 mx-auto mb-2 text-${colors.primary}-600`}
-                />
-                <p className="text-xs text-slate-500 mb-1">Memasak</p>
-                <p className="font-semibold text-slate-700">
-                  {recipe.cook_time} menit
-                </p>
-              </div>
-              <div className="bg-white/70 backdrop-blur p-4 rounded-xl border border-white/60 text-center">
-                <Users
-                  className={`w-6 h-6 mx-auto mb-2 text-${colors.primary}-600`}
-                />
-                <p className="text-xs text-slate-500 mb-1">Porsi</p>
-                <p className="font-semibold text-slate-700">
-                  {recipe.servings} orang
-                </p>
-              </div>
-              <div className="bg-white/70 backdrop-blur p-4 rounded-xl border border-white/60 text-center">
-                <ChefHat
-                  className={`w-6 h-6 mx-auto mb-2 text-${colors.primary}-600`}
-                />
-                <p className="text-xs text-slate-500 mb-1">Kesulitan</p>
-                <p
-                  className={`font-semibold capitalize ${getDifficultyColor(
-                    recipe.difficulty
-                  )}`}
-                >
-                  {recipe.difficulty}
-                </p>
-              </div>
-            </div>
-
-            {/* Rating */}
-            {recipe.average_rating > 0 && (
-              <div className="mt-6 flex items-center gap-4 bg-amber-50 border border-amber-200 rounded-xl p-4">
-                <div className="flex items-center gap-1">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <Star
-                      key={star}
-                      className={`w-5 h-5 ${
-                        star <= Math.round(recipe.average_rating)
-                          ? "text-amber-500 fill-current"
-                          : "text-slate-300"
-                      }`}
-                    />
-                  ))}
-                </div>
-                <div>
-                  <p className="text-lg font-bold text-slate-800">
-                    {recipe.average_rating.toFixed(1)}
-                  </p>
-                  <p className="text-xs text-slate-500">
-                    {recipe.review_count} ulasan
-                  </p>
-                </div>
-              </div>
-            )}
+        {/* Author + Date */}
+        <div className="flex items-center gap-3 mb-8">
+          <div className="w-10 h-10 bg-gray-300 rounded-full"></div>
+          <div>
+            <p className="font-semibold text-gray-800">
+              {recipe.author || "Unknown Author"}
+            </p>
+            <p className="text-gray-500 text-sm">
+              {formatDate(recipe.created_at)}
+            </p>
           </div>
         </div>
 
-        {/* Ingredients & Steps */}
-        <div className="grid md:grid-cols-2 gap-8 mb-8">
-          {/* Ingredients */}
-          <div className="bg-white/60 backdrop-blur-sm rounded-3xl p-6 md:p-8 shadow-xl border border-white/40">
-            <h2 className="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-3">
-              <div
-                className={`w-10 h-10 rounded-full bg-${colors.primary}-100 flex items-center justify-center`}
-              >
-                <span className={`text-${colors.primary}-600 text-xl`}>🥘</span>
-              </div>
-              Bahan-bahan
-            </h2>
-            <ul className="space-y-3">
-              {recipe.ingredients?.map((ingredient) => (
-                <li
-                  key={ingredient.id}
-                  className="flex items-start gap-3 bg-white/50 p-3 rounded-xl border border-white/60"
-                >
-                  <span className={`text-${colors.primary}-600 mt-1`}>•</span>
-                  <div>
-                    <p className="font-medium text-slate-700">
-                      {ingredient.name}
-                    </p>
-                    <p className="text-sm text-slate-500">
-                      {ingredient.quantity}
-                    </p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
+        {/* Featured Image (optional) */}
+        {recipe.image_url && (
+          <img
+            src={recipe.image_url}
+            alt={recipe.title}
+            className="w-full rounded-xl mb-10 shadow-md"
+          />
+        )}
 
-          {/* Steps */}
-          <div className="bg-white/60 backdrop-blur-sm rounded-3xl p-6 md:p-8 shadow-xl border border-white/40">
-            <h2 className="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-3">
-              <div
-                className={`w-10 h-10 rounded-full bg-${colors.primary}-100 flex items-center justify-center`}
-              >
-                <span className={`text-${colors.primary}-600 text-xl`}>👨‍🍳</span>
-              </div>
-              Langkah-langkah
-            </h2>
-            <ol className="space-y-4">
-              {recipe.steps?.map((step) => (
-                <li
-                  key={step.id}
-                  className="flex gap-4 bg-white/50 p-4 rounded-xl border border-white/60"
-                >
-                  <div
-                    className={`flex-shrink-0 w-8 h-8 rounded-full bg-${colors.primary}-600 text-white flex items-center justify-center font-bold text-sm`}
-                  >
-                    {step.step_number}
-                  </div>
-                  <p className="text-slate-700 leading-relaxed pt-1">
-                    {step.instruction}
-                  </p>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </div>
-
-        {/* Reviews Section */}
-        <div className="bg-white/60 backdrop-blur-sm rounded-3xl p-6 md:p-8 shadow-xl border border-white/40">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-slate-800">
-              Ulasan ({reviews?.length || 0})
-            </h2>
-            <button
-              onClick={() => setShowReviewForm(!showReviewForm)}
-              className={`px-4 py-2 bg-${colors.primary}-600 text-white rounded-xl hover:bg-${colors.primary}-700 transition-colors font-medium`}
-            >
-              {showReviewForm ? "Batal" : "Tulis Ulasan"}
-            </button>
-          </div>
-
-          {/* Review Form */}
-          {showReviewForm && (
-            <form
-              onSubmit={handleSubmitReview}
-              className="mb-8 bg-white/70 rounded-2xl p-6 border border-white/60"
-            >
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-slate-700 mb-2">
-                  Rating
-                </label>
-                <div className="flex gap-2">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <button
-                      key={star}
-                      type="button"
-                      onClick={() => setRating(star)}
-                      className="focus:outline-none"
-                    >
-                      <Star
-                        className={`w-8 h-8 ${
-                          star <= rating
-                            ? "text-amber-500 fill-current"
-                            : "text-slate-300"
-                        } hover:scale-110 transition-transform`}
-                      />
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-slate-700 mb-2">
-                  Komentar
-                </label>
-                <textarea
-                  value={comment}
-                  onChange={(e) => setComment(e.target.value)}
-                  placeholder="Bagikan pengalaman Anda dengan resep ini..."
-                  rows={4}
-                  className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white resize-none"
-                />
-              </div>
-
-              <button
-                type="submit"
-                disabled={createLoading || !comment.trim()}
-                className={`w-full md:w-auto px-6 py-3 bg-${colors.primary}-600 text-white rounded-xl hover:bg-${colors.primary}-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2`}
-              >
-                <Send className="w-4 h-4" />
-                {createLoading ? "Mengirim..." : "Kirim Ulasan"}
-              </button>
-            </form>
-          )}
-
-          {/* Reviews List */}
-          <div className="space-y-4">
-            {reviewsLoading ? (
-              <div className="text-center py-8">
-                <div
-                  className={`animate-spin rounded-full h-8 w-8 border-b-2 border-${colors.primary}-600 mx-auto`}
-                ></div>
-              </div>
-            ) : reviews && reviews.length > 0 ? (
-              reviews.map((review) => (
-                <div
-                  key={review.id}
-                  className="bg-white/70 rounded-2xl p-6 border border-white/60"
-                >
-                  <div className="flex items-start justify-between mb-3">
-                    <div>
-                      <p className="font-semibold text-slate-800">
-                        {review.user_identifier}
-                      </p>
-                      <div className="flex items-center gap-1 mt-1">
-                        {[1, 2, 3, 4, 5].map((star) => (
-                          <Star
-                            key={star}
-                            className={`w-4 h-4 ${
-                              star <= review.rating
-                                ? "text-amber-500 fill-current"
-                                : "text-slate-300"
-                            }`}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                    <p className="text-sm text-slate-500">
-                      {formatDate(review.created_at)}
-                    </p>
-                  </div>
-                  {review.comment && (
-                    <p className="text-slate-700 leading-relaxed">
-                      {review.comment}
-                    </p>
-                  )}
-                </div>
-              ))
-            ) : (
-              <div className="text-center py-8">
-                <p className="text-slate-500">
-                  Belum ada ulasan untuk resep ini.
-                </p>
-                <p className="text-slate-400 text-sm mt-2">
-                  Jadilah yang pertama memberikan ulasan!
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
+        {/* Blog Content */}
+        <article className="prose prose-lg max-w-none text-gray-800 leading-relaxed">
+          <div
+            dangerouslySetInnerHTML={{
+              __html: recipe.content,
+            }}
+          />
+        </article>
       </main>
     </div>
   );
