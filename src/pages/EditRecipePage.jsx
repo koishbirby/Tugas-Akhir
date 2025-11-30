@@ -1,12 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../config/supabaseClient';
 import { Loader } from 'lucide-react';
 
-export default function EditRecipePage() {
-  const { id } = useParams();
-  const navigate = useNavigate();
-
+export default function EditRecipePage({ recipeId, onBack }) {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
@@ -15,15 +11,15 @@ export default function EditRecipePage() {
   const [content, setContent] = useState('');
 
   useEffect(() => {
-    if (!id) return;
+    if (!recipeId) return;
 
-    const loadPost = async () => {
+    const loadRecipe = async () => {
       setLoading(true);
       try {
         const { data, error } = await supabase
-          .from('blog_posts')
+          .from('recipes') // adjust table name if needed
           .select('title, content')
-          .eq('id', id)
+          .eq('id', recipeId)
           .single();
 
         if (error) throw error;
@@ -33,14 +29,14 @@ export default function EditRecipePage() {
           setContent(data.content || '');
         }
       } catch (err) {
-        setError(err.message || 'Gagal memuat post');
+        setError(err.message || 'Gagal memuat resep');
       } finally {
         setLoading(false);
       }
     };
 
-    loadPost();
-  }, [id]);
+    loadRecipe();
+  }, [recipeId]);
 
   const handleSave = async (e) => {
     e.preventDefault();
@@ -53,19 +49,17 @@ export default function EditRecipePage() {
 
     setSaving(true);
     try {
-      const updates = { 
-        title: title.trim(), 
-        content: content || null 
-      };
+      const updates = { title: title.trim(), content };
 
       const { error } = await supabase
-        .from('blog_posts')
+        .from('recipes')
         .update(updates)
-        .eq('id', id);
+        .eq('id', recipeId);
 
       if (error) throw error;
 
-      navigate(-1);
+      // call onBack instead of navigate
+      if (onBack) onBack();
     } catch (err) {
       setError(err.message || 'Gagal menyimpan perubahan');
     } finally {
@@ -86,7 +80,7 @@ export default function EditRecipePage() {
 
   return (
     <div className="max-w-3xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-4">Edit Post</h1>
+      <h1 className="text-2xl font-bold mb-4">Edit Resep</h1>
 
       {error && (
         <div className="mb-4 text-red-600 bg-red-50 p-3 rounded">{error}</div>
@@ -102,7 +96,7 @@ export default function EditRecipePage() {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             className="w-full px-4 py-3 border rounded-lg"
-            placeholder="Judul post"
+            placeholder="Judul resep"
           />
         </div>
 
@@ -122,7 +116,7 @@ export default function EditRecipePage() {
         <div className="flex gap-3">
           <button
             type="button"
-            onClick={() => navigate(-1)}
+            onClick={onBack}
             disabled={saving}
             className="px-4 py-2 border rounded-md"
           >
