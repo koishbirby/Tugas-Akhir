@@ -26,7 +26,7 @@ class RecipeService {
         };
       }
 
-      let query = supabase.from('recipes').select('*', { count: 'exact' });
+      let query = supabase.from('blog_posts').select('*', { count: 'exact' });
 
       // Apply category filter
       if (category) {
