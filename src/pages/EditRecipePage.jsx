@@ -1,67 +1,71 @@
-import React, { useEffect, useState } from 'react';
-import { supabase } from '../config/supabaseClient';
-import { Loader } from 'lucide-react';
+// src/components/edit/EditRecipePage.jsx
+import React, { useEffect, useState } from "react";
+import { supabase } from "../config/supabaseClient";
+import { Loader } from "lucide-react";
 
-export default function EditRecipePage({ recipeId, onBack }) {
+export default function EditRecipePage({ postId, onBack }) {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [author, setAuthor] = useState("");
 
+  // Load post data
   useEffect(() => {
-    if (!recipeId) return;
+    if (!postId) return;
 
-    const loadRecipe = async () => {
+    const loadPost = async () => {
       setLoading(true);
       try {
         const { data, error } = await supabase
-          .from('blog_posts') // adjust table name if needed
-          .select('title, content')
-          .eq('id', recipeId)
+          .from("blog_posts")
+          .select("title, content, author")
+          .eq("id", postId)
           .single();
 
         if (error) throw error;
 
         if (data) {
-          setTitle(data.title || '');
-          setContent(data.content || '');
+          setTitle(data.title || "");
+          setContent(data.content || "");
+          setAuthor(data.author || "");
         }
       } catch (err) {
-        setError(err.message || 'Gagal memuat resep');
+        setError(err.message || "Gagal memuat post");
       } finally {
         setLoading(false);
       }
     };
 
-    loadRecipe();
-  }, [recipeId]);
+    loadPost();
+  }, [postId]);
 
+  // Save changes
   const handleSave = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
 
     if (!title || title.trim().length < 3) {
-      setError('Judul wajib diisi (minimal 3 karakter)');
+      setError("Judul wajib diisi (minimal 3 karakter)");
       return;
     }
 
     setSaving(true);
     try {
-      const updates = { title: title.trim(), content };
+      const updates = { title: title.trim(), content, author: author.trim() || null };
 
       const { error } = await supabase
-        .from('blog_posts')
+        .from("blog_posts")
         .update(updates)
-        .eq('id', recipeId);
+        .eq("id", postId);
 
       if (error) throw error;
 
-      // call onBack instead of navigate
-      if (onBack) onBack();
+      if (onBack) onBack(); // Go back to RecipeDetail
     } catch (err) {
-      setError(err.message || 'Gagal menyimpan perubahan');
+      setError(err.message || "Gagal menyimpan perubahan");
     } finally {
       setSaving(false);
     }
@@ -72,7 +76,7 @@ export default function EditRecipePage({ recipeId, onBack }) {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <Loader className="w-12 h-12 animate-spin text-blue-600 mx-auto mb-4" />
-          <p className="text-slate-600">Memuat resep...</p>
+          <p className="text-slate-600">Memuat post...</p>
         </div>
       </div>
     );
@@ -80,11 +84,9 @@ export default function EditRecipePage({ recipeId, onBack }) {
 
   return (
     <div className="max-w-3xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-4">Edit Resep</h1>
+      <h1 className="text-2xl font-bold mb-4">Edit Post</h1>
 
-      {error && (
-        <div className="mb-4 text-red-600 bg-red-50 p-3 rounded">{error}</div>
-      )}
+      {error && <div className="mb-4 text-red-600 bg-red-50 p-3 rounded">{error}</div>}
 
       <form onSubmit={handleSave} className="space-y-6">
         <div>
@@ -96,7 +98,20 @@ export default function EditRecipePage({ recipeId, onBack }) {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             className="w-full px-4 py-3 border rounded-lg"
-            placeholder="Judul resep"
+            placeholder="Judul post"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-slate-700 mb-2">
+            Penulis
+          </label>
+          <input
+            type="text"
+            value={author}
+            onChange={(e) => setAuthor(e.target.value)}
+            className="w-full px-4 py-3 border rounded-lg"
+            placeholder="Nama penulis"
           />
         </div>
 
@@ -127,7 +142,7 @@ export default function EditRecipePage({ recipeId, onBack }) {
             disabled={saving}
             className="px-4 py-2 bg-blue-600 text-white rounded-md"
           >
-            {saving ? 'Menyimpan...' : 'Simpan'}
+            {saving ? "Menyimpan..." : "Simpan"}
           </button>
         </div>
       </form>
