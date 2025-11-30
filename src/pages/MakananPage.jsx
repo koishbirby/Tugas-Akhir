@@ -1,6 +1,6 @@
 // src/pages/MakananPage.jsx
 import { useState } from "react";
-import { useRecipes } from "../hooks/useRecipes";
+import { useBlogPosts } from "../hooks/useBlogPosts";
 import RecipeGrid from "../components/makanan/RecipeGrid";
 import AdvancedFilter from "../components/common/AdvancedFilter.jsx";
 
@@ -14,15 +14,12 @@ export default function MakananPage({ onRecipeClick }) {
   });
   const [page, setPage] = useState(1);
 
-  // Fetch recipes from API with all filters
-  const { recipes, loading, error, pagination, refetch } = useRecipes({
-    category: "makanan",
+  // Fetch blog posts from Supabase with all filters
+  const { posts, loading, error, pagination, refetch } = useBlogPosts({
+    category: "Food",
     search: searchQuery || undefined,
-    difficulty: filters.difficulty || undefined,
     page,
     limit: 12,
-    sort_by: filters.sortBy,
-    order: filters.order,
   });
 
   const handleSearchChange = (query) => {
@@ -37,10 +34,10 @@ export default function MakananPage({ onRecipeClick }) {
 
   // Client-side filter for prep time (since API might not support it)
   const filteredRecipes = filters.prepTimeMax
-    ? recipes.filter(
-        (recipe) => recipe.prep_time <= parseInt(filters.prepTimeMax)
+    ? posts.filter(
+        (post) => post.prep_time <= parseInt(filters.prepTimeMax)
       )
-    : recipes;
+    : posts;
 
   return (
     <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-indigo-50 pb-20 md:pb-8">
