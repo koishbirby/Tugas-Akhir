@@ -4,6 +4,22 @@ import { useRecipe } from "../../hooks/useRecipes";
 import { useReviews, useCreateReview } from "../../hooks/useReviews";
 import { useIsFavorited } from "../../hooks/useFavorites";
 import { getUserIdentifier } from "../../hooks/useFavorites";
+import {
+  formatDate,
+  getDifficultyColor,
+  getStarRating,
+} from "../../Utils/helpers";
+import {
+  ArrowLeft,
+  Heart,
+  Clock,
+  Users,
+  ChefHat,
+  Star,
+  Send,
+  Edit,
+  Trash2,
+} from "lucide-react";
 import recipeService from "../../services/recipeService";
 import ConfirmModal from "../modals/ConfirmModal";
 import FavoriteButton from "../common/FavoriteButton";
@@ -16,20 +32,21 @@ export default function RecipeDetail({
   category = "makanan",
 }) {
   const {
-    recipe: post,
+    recipe,
     loading: recipeLoading,
     error: recipeError,
   } = useRecipe(recipeId);
-
   const {
     reviews,
     loading: reviewsLoading,
     refetch: refetchReviews,
   } = useReviews(recipeId);
-
   const { createReview, loading: createLoading } = useCreateReview();
-  const { isFavorited, loading: favLoading, toggleFavorite } =
-    useIsFavorited(recipeId);
+  const {
+    isFavorited,
+    loading: favLoading,
+    toggleFavorite,
+  } = useIsFavorited(recipeId);
 
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState("");
@@ -63,6 +80,7 @@ export default function RecipeDetail({
   const handleSubmitReview = async (e) => {
     e.preventDefault();
 
+    // Get username from user profile
     const userProfile = userService.getUserProfile();
 
     const reviewData = {
@@ -139,7 +157,7 @@ export default function RecipeDetail({
     );
   }
 
-  if (!post) {
+  if (!recipe) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
         <div className="text-center">
@@ -157,32 +175,40 @@ export default function RecipeDetail({
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-10">
+
       {/* Title */}
       <h1 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">
         {post.title}
       </h1>
 
       {/* Author */}
-      <p className="text-slate-600 text-sm mb-4">
+      <p className="text-slate-600 text-sm mb-6">
         Ditulis oleh <span className="font-semibold">{post.author}</span>
       </p>
 
-      {/* Image between author and content */}
-      {post.image && (
-        <div className="mb-6">
-          <img
-            src={post.image}
-            alt="Resep"
-            className="w-full rounded-xl shadow-md object-cover"
-          />
+      {/* Images (if any) */}
+      {post.images && post.images.length > 0 && (
+        <div className="space-y-4 mb-8">
+
+          {post.images.map((imgUrl, index) => (
+            <img
+              key={index}
+              src={imgUrl}
+              alt={`Blog image ${index + 1}`}
+              className="w-full rounded-xl shadow-md object-cover"
+            />
+          ))}
+
         </div>
       )}
 
-      {/* Content */}
+      {/* Blog Content */}
       <div
         className="prose prose-slate max-w-none"
         dangerouslySetInnerHTML={{ __html: post.content }}
       />
+
     </div>
   );
+
 }
