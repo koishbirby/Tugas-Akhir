@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { witnessReports } from "../../data/witnessReports";
+import { witnessReports } from "../../data/report";
 import { BookText, Image as ImageIcon } from "lucide-react";
 import WitnessPopUp from '../modals/WitnessModal';
 

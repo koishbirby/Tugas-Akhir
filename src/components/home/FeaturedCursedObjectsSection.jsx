@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { cursedObjects } from "../../data/cursedObjects";
+import { cursedObjects } from "../../data/cursedObjectReport";
 import { Package, Image as ImageIcon } from "lucide-react";
 import WitnessPopUp from '../modals/WitnessModal';
 
