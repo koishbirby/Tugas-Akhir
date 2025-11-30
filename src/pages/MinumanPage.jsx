@@ -44,7 +44,7 @@ export default function MinumanPage({ onRecipeClick }) {
   const recipesForGrid = mapBlogPostsToRecipes(filteredRecipes);
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-green-50 via-white to-cyan-50 pb-20 md:pb-8">
+    <div className="min-h-screen bg-gradient-to-b from-black via-purple-800/80 to-purple-600/70 pb-20 md:pb-8">
       <main className="max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-12">
 
         {/* Advanced Filter */}
@@ -86,7 +86,7 @@ export default function MinumanPage({ onRecipeClick }) {
             {filteredRecipes.length === 0 ? (
               <div className="text-center py-12">
                 <p className="text-gray-600 text-lg">
-                  Tidak ada resep ditemukan
+                  Nothing is found...
                 </p>
                 <p className="text-gray-500 mt-2">
                   Coba ubah filter atau kata kunci pencarian

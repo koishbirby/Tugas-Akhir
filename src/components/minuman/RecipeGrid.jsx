@@ -36,11 +36,9 @@ export default function RecipeGrid({ recipes, onRecipeClick }) {
   return (
     <section>
       <h1 className="text-3xl md:text-5xl font-bold text-slate-800 text-center mb-4">
-        Jelajahi Resep Minuman
+        Delve At Your Own Risk.
       </h1>
-      <p className="text-center text-slate-500 max-w-2xl mx-auto mb-8">
-        Temukan minuman segar, hangat, dan kekinian. Mulai dari kopi hingga jus buah, semua ada di sini.
-      </p>
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
         {recipes.map((recipe, index) => (
           <div 
@@ -74,7 +72,7 @@ export default function RecipeGrid({ recipes, onRecipeClick }) {
                 <div className="flex items-center justify-between mb-3 md:mb-4">
                   {/* Changed tag color from blue to green */}
                   <span className="text-xs font-semibold text-green-700 bg-green-100/90 px-2 md:px-3 py-1 md:py-1.5 rounded-full">
-                    Minuman
+                    Cursed Object
                   </span>
                   {recipe.average_rating > 0 && (
                     <div className="flex items-center space-x-1 bg-white/90 px-2 py-1 rounded-full">
@@ -103,7 +101,7 @@ export default function RecipeGrid({ recipes, onRecipeClick }) {
       </div>
        {recipes.length === 0 && (
         <div className="text-center py-16">
-            <p className="text-slate-500">Minuman tidak ditemukan. Coba kata kunci lain.</p>
+            <p className="text-slate-500">Cursed Object not detected... Perhaps that's for the better..</p>
         </div>
       )}
     </section>
