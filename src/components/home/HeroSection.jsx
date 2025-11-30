@@ -61,7 +61,7 @@ export default function HeroSection() {
       <div className="md:hidden relative z-10 w-full px-4 py-10">
 
         {/* Countdown Mobile */}
-        <h1 className="text-lg font-semibold text-orange-400 text-center drop-shadow mb-10">
+        <h1 className="text-lg font-semibold text-orange-400 text-center drop-shadow mb-5">
           🎃 Halloween Countdown: {countdown}
         </h1>
 
@@ -157,7 +157,7 @@ export default function HeroSection() {
 
       </div>
 
-
+      { /* Desktop */}
       <div className="hidden md:block relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="flex justify-center gap-10 mt-6 flex-wrap">
           
