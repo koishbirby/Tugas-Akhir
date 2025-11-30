@@ -13,6 +13,8 @@ export default function CreateRecipePage({ onBack, onSuccess }) {
     author: '',
     category: '',
   });
+  const [imagesFiles, setImagesFiles] = useState([]);
+  const [imagePreviews, setImagePreviews] = useState([]);
 
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -61,6 +63,7 @@ export default function CreateRecipePage({ onBack, onSuccess }) {
   const handleSaveDraft = () => {
     const draftData = {
       formData,
+      // do not persist files in draft to keep storage simple
     };
     
     const success = saveDraft(draftData, 'create');
@@ -77,6 +80,19 @@ export default function CreateRecipePage({ onBack, onSuccess }) {
       ...prev,
       [name]: value
     }));
+  };
+
+  // Handle image selection (max 3)
+  const handleImagesChange = (e) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length > 3) {
+      alert('Maximum 3 images allowed');
+      files.splice(3);
+    }
+    setImagesFiles(files);
+
+    const previews = files.map((f) => URL.createObjectURL(f));
+    setImagePreviews(previews);
   };
 
   // Validate form
@@ -123,6 +139,7 @@ export default function CreateRecipePage({ onBack, onSuccess }) {
         excerpt: formData.excerpt.trim() || null,
         author: formData.author.trim() || null,
         category: formData.category,
+        images: imagesFiles,
       };
 
       // Create blog post
@@ -279,6 +296,30 @@ export default function CreateRecipePage({ onBack, onSuccess }) {
                 className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
               />
               <p className="text-xs text-slate-500 mt-1">{formData.excerpt.length} karakter</p>
+            </div>
+
+            {/* Images (optional) */}
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Gambar (maks 3)
+              </label>
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleImagesChange}
+                className="mb-3"
+              />
+
+              {imagePreviews && imagePreviews.length > 0 && (
+                <div className="flex gap-3 overflow-x-auto py-2">
+                  {imagePreviews.map((src, idx) => (
+                    <div key={idx} className="w-40 h-28 rounded-xl overflow-hidden border border-white/40 shadow-sm">
+                      <img src={src} alt={`preview-${idx}`} className="w-full h-full object-cover" />
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Content */}

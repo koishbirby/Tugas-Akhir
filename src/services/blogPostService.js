@@ -96,18 +96,55 @@ class BlogPostService {
    */
   async createBlogPost(postData) {
     try {
+      // Prepare blog post data
       const blogPost = {
         title: postData.title?.trim(),
         content: postData.content?.trim(),
         excerpt: postData.excerpt?.trim() || null,
         author: postData.author?.trim() || null,
-        category: postData.category?.trim() || null
+        category: postData.category?.trim() || null,
+        images: null
       };
+
+      // If images (File objects) provided, upload them to Supabase storage
+      if (postData.images && Array.isArray(postData.images) && postData.images.length > 0) {
+        const uploadedUrls = [];
+        // limit to max 3 images
+        const files = postData.images.slice(0, 3);
+
+        for (const file of files) {
+          try {
+            const ext = (file.name || '').split('.').pop();
+            const fileName = `${Date.now()}_${Math.random().toString(36).slice(2,8)}.${ext}`;
+            const path = `${fileName}`;
+
+            const { error: uploadError } = await supabase.storage
+              .from('blog_images')
+              .upload(path, file, { cacheControl: '3600', upsert: false });
+
+            if (uploadError) {
+              console.warn('Image upload failed for', file.name, uploadError.message);
+              continue;
+            }
+
+            const { data: publicData } = supabase.storage.from('blog_images').getPublicUrl(path);
+            if (publicData && publicData.publicUrl) {
+              uploadedUrls.push(publicData.publicUrl);
+            }
+          } catch (imgErr) {
+            console.warn('Image upload exception:', imgErr?.message || imgErr);
+          }
+        }
+
+        if (uploadedUrls.length > 0) {
+          blogPost.images = uploadedUrls;
+        }
+      }
 
       const { data, error } = await supabase
         .from('blog_posts')
         .insert([blogPost])
-        .select('id, title, content, excerpt, author, category, created_at')
+        .select('id, title, content, excerpt, author, category, images, created_at')
         .single();
 
       if (error) {

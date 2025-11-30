@@ -43,6 +43,20 @@ export default function MakananPage({ onRecipeClick }) {
   // Map blog posts to recipe shape for RecipeGrid
   const recipesForGrid = mapBlogPostsToRecipes(filteredRecipes);
 
+  // Collect images from posts to show banner above grid
+  const bannerImages = [];
+  if (posts && posts.length > 0) {
+    for (const p of posts) {
+      if (p.images && Array.isArray(p.images) && p.images.length > 0) {
+        for (const url of p.images) {
+          if (!bannerImages.includes(url)) bannerImages.push(url);
+          if (bannerImages.length >= 6) break;
+        }
+      }
+      if (bannerImages.length >= 6) break;
+    }
+  }
+
   return (
     <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-indigo-50 pb-20 md:pb-8">
       <main className="max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-12">
@@ -92,6 +106,18 @@ export default function MakananPage({ onRecipeClick }) {
         {/* Recipes Grid */}
         {!loading && !error && (
           <>
+            {/* Images banner (if any) */}
+            {bannerImages.length > 0 && (
+              <div className="mb-8">
+                <div className="flex gap-3 overflow-x-auto pb-4">
+                  {bannerImages.map((src, idx) => (
+                    <div key={idx} className="w-64 h-40 flex-shrink-0 rounded-xl overflow-hidden border border-white/30 shadow-sm">
+                      <img src={src} alt={`banner-${idx}`} className="w-full h-full object-cover" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
             {filteredRecipes.length === 0 ? (
               <div className="text-center py-12">
                 <p className="text-gray-600 text-lg">
