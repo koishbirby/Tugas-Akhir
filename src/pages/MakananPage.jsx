@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useBlogPosts } from "../hooks/useBlogPosts";
 import RecipeGrid from "../components/makanan/RecipeGrid";
 import AdvancedFilter from "../components/common/AdvancedFilter.jsx";
+import { mapBlogPostsToRecipes } from "../utils/blogToRecipeMapper";
 
 export default function MakananPage({ onRecipeClick }) {
   const [searchQuery, setSearchQuery] = useState("");
@@ -38,6 +39,9 @@ export default function MakananPage({ onRecipeClick }) {
         (post) => post.prep_time <= parseInt(filters.prepTimeMax)
       )
     : posts;
+
+  // Map blog posts to recipe shape for RecipeGrid
+  const recipesForGrid = mapBlogPostsToRecipes(filteredRecipes);
 
   return (
     <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-indigo-50 pb-20 md:pb-8">
@@ -99,7 +103,7 @@ export default function MakananPage({ onRecipeClick }) {
               </div>
             ) : (
               <RecipeGrid
-                recipes={filteredRecipes}
+                recipes={recipesForGrid}
                 onRecipeClick={onRecipeClick}
               />
             )}

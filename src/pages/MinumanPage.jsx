@@ -1,8 +1,9 @@
 // src/pages/MinumanPage.jsx
 import { useState } from "react";
-import { useBlogPosts } from "../hooks/useBlogPosts.js";
+import { useBlogPosts } from "../hooks/useBlogPosts";
 import RecipeGrid from "../components/minuman/RecipeGrid";
 import AdvancedFilter from "../components/common/AdvancedFilter.jsx";
+import { mapBlogPostsToRecipes } from "../utils/blogToRecipeMapper";
 
 export default function MinumanPage({ onRecipeClick }) {
   const [searchQuery, setSearchQuery] = useState("");
@@ -38,6 +39,9 @@ export default function MinumanPage({ onRecipeClick }) {
         (post) => post.prep_time <= parseInt(filters.prepTimeMax)
       )
     : posts;
+
+  // Map blog posts to recipe shape for RecipeGrid
+  const recipesForGrid = mapBlogPostsToRecipes(filteredRecipes);
 
   return (
     <div className="min-h-screen bg-linear-to-br from-green-50 via-white to-cyan-50 pb-20 md:pb-8">
@@ -88,7 +92,7 @@ export default function MinumanPage({ onRecipeClick }) {
         {/* Recipes Grid */}
         {!loading && !error && (
           <>
-            {recipes.length === 0 ? (
+            {filteredRecipes.length === 0 ? (
               <div className="text-center py-12">
                 <p className="text-gray-600 text-lg">
                   Tidak ada resep ditemukan
@@ -99,7 +103,7 @@ export default function MinumanPage({ onRecipeClick }) {
               </div>
             ) : (
               <RecipeGrid
-                recipes={filteredRecipes}
+                recipes={recipesForGrid}
                 onRecipeClick={onRecipeClick}
               />
             )}
