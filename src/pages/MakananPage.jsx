@@ -1,6 +1,6 @@
 // src/pages/MakananPage.jsx
 import { useState } from "react";
-import { useRecipes } from "../hooks/useRecipes";
+import { useBlogPosts } from "../hooks/useBlogPosts";
 import RecipeGrid from "../components/makanan/RecipeGrid";
 import AdvancedFilter from "../components/common/AdvancedFilter.jsx";
 
@@ -15,7 +15,7 @@ export default function MakananPage({ onRecipeClick }) {
   const [page, setPage] = useState(1);
 
   // Fetch blog posts from Supabase with all filters
-  const { posts, loading, error, pagination, refetch } = useRecipes({
+  const { posts, loading, error, pagination, refetch } = useBlogPosts({
     category: "makanan",
     search: searchQuery || undefined,
     page,
