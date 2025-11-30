@@ -17,7 +17,7 @@ export default function EditRecipePage({ recipeId, onBack }) {
       setLoading(true);
       try {
         const { data, error } = await supabase
-          .from('recipes') // adjust table name if needed
+          .from('blog_posts') // adjust table name if needed
           .select('title, content')
           .eq('id', recipeId)
           .single();
@@ -52,7 +52,7 @@ export default function EditRecipePage({ recipeId, onBack }) {
       const updates = { title: title.trim(), content };
 
       const { error } = await supabase
-        .from('recipes')
+        .from('blog_posts')
         .update(updates)
         .eq('id', recipeId);
 
