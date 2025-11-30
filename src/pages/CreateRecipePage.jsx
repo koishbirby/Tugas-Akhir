@@ -1,7 +1,7 @@
 // src/pages/CreateRecipePage.jsx - Blog Post Creator
 import { useState, useEffect } from 'react';
 import { ArrowLeft, Send, AlertCircle, CheckCircle, Save } from 'lucide-react';
-import uploadService from '../services/uploadService';
+import blogPostService from '../services/blogPostService';
 import { saveDraft, loadDraft, deleteDraft, hasDraft, getDraftTimestamp, formatDraftTime } from '../Utils/draftStorage';
 import ConfirmModal from '../components/modals/ConfirmModal';
 
@@ -126,7 +126,7 @@ export default function CreateRecipePage({ onBack, onSuccess }) {
       };
 
       // Create blog post
-      const result = await uploadService.uploadImage(postData);
+      const result = await blogPostService.createBlogPost(postData);
 
       if (result.success) {
         alert('Blog post berhasil dibuat!');
