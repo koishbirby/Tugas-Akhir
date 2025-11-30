@@ -59,14 +59,12 @@ export default function RecipeGrid({ recipes, onRecipeClick }) {
               onClick={() => onRecipeClick && onRecipeClick(recipe.id)}
               className="relative bg-white/15 backdrop-blur-xl border border-white/25 rounded-2xl md:rounded-3xl overflow-hidden shadow-lg md:shadow-2xl shadow-blue-500/5 hover:shadow-blue-500/15 transition-all duration-500 cursor-pointer group-hover:scale-105 group-hover:bg-white/20">
               <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              <div className="relative h-32 md:h-56 overflow-hidden">
-                <img 
-                  src={recipe.image_url}
-                  alt={recipe.name}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
-                
+              <div className="relative h-32 md:h-56 overflow-hidden flex items-center justify-center bg-gradient-to-br from-white/5 to-blue-50">
+                <div className="text-center px-4">
+                  <p className="text-sm md:text-base text-slate-500">{recipe.category || 'Kategori'}</p>
+                </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/5 via-transparent to-transparent" />
+
                 {/* Favorite Button */}
                 <div className="absolute top-3 right-3 z-10">
                   <FavoriteButton recipeId={recipe.id} size="sm" />
