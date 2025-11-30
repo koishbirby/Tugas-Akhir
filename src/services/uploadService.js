@@ -2,34 +2,44 @@ import { supabase } from '../config/supabaseClient';
 
 class UploadService {
   /**
-   * Upload recipe image to Supabase Storage
+   * Create a blog post in Supabase database
    * 
    * SETUP REQUIRED:
-   * 1. Create a 'recipe-images' bucket in Supabase Storage (set to public policy)
+   * 1. Create a 'blog_posts' table in Supabase with columns:
+   *    - id (bigint, primary key, auto-generated)
+   *    - title (varchar)
+   *    - content (text)
+   *    - excerpt (text, optional)
+   *    - author (varchar, optional)
+   *    - category (varchar, optional)
+   *    - created_at (timestamp, default now())
+   *    - updated_at (timestamp, default now())
    * 2. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in your .env file
    * 
-   * @param {File} file - Image file to upload
-   * @returns {Promise<Object>} - { success: true, data: { url }, error: null } or { success: false, error, data: null }
+   * @param {Object} postData - Blog post data { title, content, excerpt, author, category }
+   * @returns {Promise<Object>} - { success: true, data: { id, ...post }, error: null } or { success: false, error, data: null }
    */
-  async uploadImage(file) {
+  async uploadImage(postData) {
     try {
       // Validation
-      if (!file) {
-        return { success: false, error: 'No file provided', data: null };
+      if (!postData) {
+        return { success: false, error: 'No post data provided', data: null };
       }
 
-      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
-      if (!allowedTypes.includes(file.type)) {
+      if (!postData.title || postData.title.trim() === '') {
         return {
           success: false,
-          error: 'Invalid file type. Allowed: .jpg, .jpeg, .png, .webp',
+          error: 'Post title is required',
           data: null
         };
       }
 
-      const maxSize = 5 * 1024 * 1024; // 5MB
-      if (file.size > maxSize) {
-        return { success: false, error: 'File size exceeds 5MB limit', data: null };
+      if (!postData.content || postData.content.trim() === '') {
+        return {
+          success: false,
+          error: 'Post content is required',
+          data: null
+        };
       }
 
       // Check if supabase client is initialized
@@ -41,41 +51,34 @@ class UploadService {
         };
       }
 
-      // Generate unique file name to avoid conflicts
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
-      const filePath = `uploads/${fileName}`;
+      // Prepare blog post data
+      const blogPost = {
+        title: postData.title.trim(),
+        content: postData.content.trim(),
+        excerpt: postData.excerpt?.trim() || null,
+        author: postData.author?.trim() || null,
+        category: postData.category?.trim() || null
+      };
 
-      // Upload to Supabase Storage
-      const { data, error } = await supabase.storage
-        .from('recipe-images')   // Bucket name - MUST exist in Supabase
-        .upload(filePath, file);
+      // Insert into Supabase database
+      const { data, error } = await supabase
+        .from('blog_posts')
+        .insert([blogPost])
+        .select()
+        .single();
 
       if (error) {
-        console.error('Supabase upload error:', error);
+        console.error('Supabase insert error:', error);
         return {
           success: false,
-          error: `Upload failed: ${error.message}. Make sure 'recipe-images' bucket exists and is public.`,
-          data: null
-        };
-      }
-
-      // Generate public URL
-      const { data: publicUrlData } = supabase.storage
-        .from('recipe-images')
-        .getPublicUrl(filePath);
-
-      if (!publicUrlData || !publicUrlData.publicUrl) {
-        return {
-          success: false,
-          error: 'Failed to generate public URL for uploaded image',
+          error: `Failed to save post: ${error.message}. Make sure 'blog_posts' table exists in Supabase.`,
           data: null
         };
       }
 
       return {
         success: true,
-        data: { url: publicUrlData.publicUrl },
+        data: data,
         error: null
       };
 
@@ -83,7 +86,205 @@ class UploadService {
       console.error('Upload service error:', error);
       return {
         success: false,
-        error: error.message || 'An unexpected error occurred during upload',
+        error: error.message || 'An unexpected error occurred while saving the post',
+        data: null
+      };
+    }
+  }
+
+  /**
+   * Get all blog posts from Supabase
+   * @returns {Promise<Object>} - { success: true, data: [...posts], error: null } or { success: false, error, data: null }
+   */
+  async getPosts() {
+    try {
+      if (!supabase) {
+        return {
+          success: false,
+          error: 'Supabase client not initialized',
+          data: null
+        };
+      }
+
+      const { data, error } = await supabase
+        .from('blog_posts')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Supabase fetch error:', error);
+        return {
+          success: false,
+          error: error.message,
+          data: null
+        };
+      }
+
+      return {
+        success: true,
+        data: data,
+        error: null
+      };
+
+    } catch (error) {
+      console.error('Fetch service error:', error);
+      return {
+        success: false,
+        error: error.message || 'An unexpected error occurred while fetching posts',
+        data: null
+      };
+    }
+  }
+
+  /**
+   * Get a single blog post by ID
+   * @param {number} id - Post ID
+   * @returns {Promise<Object>} - { success: true, data: {...post}, error: null } or { success: false, error, data: null }
+   */
+  async getPostById(id) {
+    try {
+      if (!id) {
+        return { success: false, error: 'Post ID is required', data: null };
+      }
+
+      if (!supabase) {
+        return {
+          success: false,
+          error: 'Supabase client not initialized',
+          data: null
+        };
+      }
+
+      const { data, error } = await supabase
+        .from('blog_posts')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+      if (error) {
+        console.error('Supabase fetch error:', error);
+        return {
+          success: false,
+          error: error.message,
+          data: null
+        };
+      }
+
+      return {
+        success: true,
+        data: data,
+        error: null
+      };
+
+    } catch (error) {
+      console.error('Fetch service error:', error);
+      return {
+        success: false,
+        error: error.message || 'An unexpected error occurred',
+        data: null
+      };
+    }
+  }
+
+  /**
+   * Update a blog post
+   * @param {number} id - Post ID
+   * @param {Object} updates - Fields to update
+   * @returns {Promise<Object>} - { success: true, data: {...post}, error: null } or { success: false, error, data: null }
+   */
+  async updatePost(id, updates) {
+    try {
+      if (!id) {
+        return { success: false, error: 'Post ID is required', data: null };
+      }
+
+      if (!updates || Object.keys(updates).length === 0) {
+        return { success: false, error: 'No updates provided', data: null };
+      }
+
+      if (!supabase) {
+        return {
+          success: false,
+          error: 'Supabase client not initialized',
+          data: null
+        };
+      }
+
+      const { data, error } = await supabase
+        .from('blog_posts')
+        .update(updates)
+        .eq('id', id)
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Supabase update error:', error);
+        return {
+          success: false,
+          error: error.message,
+          data: null
+        };
+      }
+
+      return {
+        success: true,
+        data: data,
+        error: null
+      };
+
+    } catch (error) {
+      console.error('Update service error:', error);
+      return {
+        success: false,
+        error: error.message || 'An unexpected error occurred',
+        data: null
+      };
+    }
+  }
+
+  /**
+   * Delete a blog post
+   * @param {number} id - Post ID
+   * @returns {Promise<Object>} - { success: true, error: null } or { success: false, error, data: null }
+   */
+  async deletePost(id) {
+    try {
+      if (!id) {
+        return { success: false, error: 'Post ID is required', data: null };
+      }
+
+      if (!supabase) {
+        return {
+          success: false,
+          error: 'Supabase client not initialized',
+          data: null
+        };
+      }
+
+      const { error } = await supabase
+        .from('blog_posts')
+        .delete()
+        .eq('id', id);
+
+      if (error) {
+        console.error('Supabase delete error:', error);
+        return {
+          success: false,
+          error: error.message,
+          data: null
+        };
+      }
+
+      return {
+        success: true,
+        error: null
+      };
+
+    } catch (error) {
+      console.error('Delete service error:', error);
+      return {
+        success: false,
+        error: error.message || 'An unexpected error occurred',
         data: null
       };
     }
