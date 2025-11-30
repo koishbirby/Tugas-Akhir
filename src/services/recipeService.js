@@ -106,7 +106,7 @@ class RecipeService {
       }
 
       const { data, error } = await supabase
-        .from('recipes')
+        .from('blog_posts')
         .select('*')
         .eq('id', id)
         .single();
@@ -155,7 +155,7 @@ class RecipeService {
       }
 
       const { data, error } = await supabase
-        .from('recipes')
+        .from('blog_posts')
         .insert([recipeData])
         .select()
         .single();
@@ -205,7 +205,7 @@ class RecipeService {
       }
 
       const { data, error } = await supabase
-        .from('recipes')
+        .from('blog_posts')
         .update(recipeData)
         .eq('id', id)
         .select()
@@ -256,7 +256,7 @@ class RecipeService {
       }
 
       const { data, error } = await supabase
-        .from('recipes')
+        .from('blog_posts')
         .update(partialData)
         .eq('id', id)
         .select()
@@ -305,7 +305,7 @@ class RecipeService {
       }
 
       const { error } = await supabase
-        .from('recipes')
+        .from('blog_posts')
         .delete()
         .eq('id', id);
 
