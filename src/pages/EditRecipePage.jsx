@@ -446,6 +446,7 @@ export default function EditRecipePage({ recipeId, onBack, onSuccess }) {
                   onChange={handleChange}
                   className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 >
+                  <option value="">-</option>
                   <option value="makanan">Makanan</option>
                   <option value="minuman">Minuman</option>
                 </select>
