@@ -1,27 +1,19 @@
 // src/components/recipe/RecipeDetail.jsx
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "../../config/supabaseClient";
-import { useEffect } from "react";
-import {
-  ArrowLeft,
-  Edit,
-  Trash2,
-  Loader,
-} from "lucide-react";
+import { ArrowLeft, Edit, Trash2, Loader } from "lucide-react";
 import ConfirmModal from "../modals/ConfirmModal";
 import FavoriteButton from "../common/FavoriteButton";
+import EditRecipePage from "./EditRecipePage"; // import edit page
 
-export default function RecipeDetail({
-  recipeId,
-  onBack,
-  onEdit,
-}) {
+export default function RecipeDetail({ recipeId, onBack }) {
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [deleting, setDeleting] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isFavorited, setIsFavorited] = useState(false);
+  const [editing, setEditing] = useState(false); // toggle edit mode
 
   useEffect(() => {
     loadPost();
@@ -59,9 +51,7 @@ export default function RecipeDetail({
 
       alert("Post berhasil dihapus!");
       setShowDeleteModal(false);
-      if (onBack) {
-        onBack();
-      }
+      if (onBack) onBack();
     } catch (err) {
       console.error("Delete post error:", err);
       alert(err.message || "Terjadi kesalahan saat menghapus post");
@@ -70,61 +60,45 @@ export default function RecipeDetail({
     }
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <Loader className="w-12 h-12 animate-spin text-blue-600 mx-auto mb-4" />
-          <p className="text-slate-600">Memuat post...</p>
-        </div>
-      </div>
-    );
-  }
+  if (loading) return (
+    <div className="min-h-screen flex items-center justify-center">
+      <Loader className="w-12 h-12 animate-spin text-blue-600" />
+      <p className="text-slate-600 mt-4">Memuat post...</p>
+    </div>
+  );
 
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center p-4">
-        <div className="text-center max-w-md">
-          <div className="bg-red-50 border border-red-200 rounded-2xl p-6">
-            <p className="text-red-600 font-semibold mb-2">Terjadi Kesalahan</p>
-            <p className="text-red-500 mb-4">{error}</p>
-            <button
-              onClick={onBack}
-              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-            >
-              Kembali
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  if (error) return (
+    <div className="min-h-screen flex flex-col items-center justify-center">
+      <p className="text-red-600 mb-2">Terjadi Kesalahan</p>
+      <p className="mb-4">{error}</p>
+      <button onClick={onBack} className="px-4 py-2 bg-red-600 text-white rounded-lg">Kembali</button>
+    </div>
+  );
 
-  if (!post) {
+  if (!post) return (
+    <div className="min-h-screen flex items-center justify-center">
+      <p>Post tidak ditemukan</p>
+      <button onClick={onBack} className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg">Kembali</button>
+    </div>
+  );
+
+  if (editing) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4">
-        <div className="text-center">
-          <p className="text-slate-600">Post tidak ditemukan</p>
-          <button
-            onClick={onBack}
-            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            Kembali
-          </button>
-        </div>
-      </div>
+      <EditRecipePage
+        recipeId={recipeId}
+        onBack={() => {
+          setEditing(false);
+          loadPost(); // reload post after editing
+        }}
+      />
     );
   }
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
       {/* Back Button */}
-      <button
-        onClick={onBack}
-        className="flex items-center gap-2 text-slate-600 hover:text-slate-900 mb-6 transition-colors"
-      >
-        <ArrowLeft className="w-5 h-5" />
-        Kembali
+      <button onClick={onBack} className="flex items-center gap-2 text-slate-600 hover:text-slate-900 mb-6">
+        <ArrowLeft className="w-5 h-5" /> Kembali
       </button>
 
       {/* Title */}
@@ -135,37 +109,17 @@ export default function RecipeDetail({
 
       {/* Action Buttons */}
       <div className="flex gap-3 mb-8">
-        <FavoriteButton
-          isFavorited={isFavorited}
-          onClick={() => setIsFavorited(!isFavorited)}
-        />
-        {onEdit && (
-          <button
-            onClick={onEdit}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            <Edit className="w-4 h-4" />
-            Edit
-          </button>
-        )}
-        <button
-          onClick={() => setShowDeleteModal(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-        >
-          <Trash2 className="w-4 h-4" />
-          Delete
+        <FavoriteButton isFavorited={isFavorited} onClick={() => setIsFavorited(!isFavorited)} />
+        <button onClick={() => setEditing(true)} className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+          <Edit className="w-4 h-4" /> Edit
+        </button>
+        <button onClick={() => setShowDeleteModal(true)} className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
+          <Trash2 className="w-4 h-4" /> Delete
         </button>
       </div>
 
       {/* Content */}
-      <div className="prose prose-lg max-w-none text-slate-700 leading-relaxed">
-        {post.content && (
-          <div
-            dangerouslySetInnerHTML={{ __html: post.content }}
-            className="whitespace-pre-wrap"
-          />
-        )}
-      </div>
+      <div className="prose prose-lg max-w-none text-slate-700 leading-relaxed" dangerouslySetInnerHTML={{ __html: post.content }} />
 
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
