@@ -35,9 +35,9 @@ export default function RecipeGrid({ recipes, onRecipeClick }) {
 
   return (
     <section>
-      <h1 className="text-3xl md:text-5xl font-bold text-slate-800 text-center mb-4">
-        Delve At Your Own Risk.
-      </h1>
+       <h1 className="text-3xl md:text-5xl font-bold text-white text-center mb-4">
+           Delve At Your Own Risk.
+       </h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
         {recipes.map((recipe, index) => (
@@ -55,19 +55,11 @@ export default function RecipeGrid({ recipes, onRecipeClick }) {
               onClick={() => onRecipeClick && onRecipeClick(recipe.id)}
               className="relative bg-white/15 backdrop-blur-xl border border-white/25 rounded-2xl md:rounded-3xl overflow-hidden shadow-lg md:shadow-2xl shadow-green-500/5 hover:shadow-green-500/15 transition-all duration-500 cursor-pointer group-hover:scale-105 group-hover:bg-white/20">
               <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-green-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              <div className="relative h-32 md:h-56 overflow-hidden">
-                <img 
-                  src={recipe.image_url}
-                  alt={recipe.name}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
-                
-                {/* Favorite Button */}
-                <div className="absolute top-3 right-3 z-10">
-                  <FavoriteButton recipeId={recipe.id} size="sm" />
-                </div>
-              </div>
+              <div className="relative h-32 md:h-56">
+                  <div className="absolute top-3 right-3 z-20">
+                    <FavoriteButton recipeId={recipe.id} size="sm" />
+                  </div>
+                </div>            
               <div className="relative z-10 p-4 md:p-8">
                 <div className="flex items-center justify-between mb-3 md:mb-4">
                   {/* Changed tag color from blue to green */}
