@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useBlogPosts } from "../hooks/useBlogPosts";
 import RecipeGrid from "../components/minuman/RecipeGrid";
 import AdvancedFilter from "../components/common/AdvancedFilter.jsx";
-import { mapBlogPostsToRecipes } from "../utils/blogToRecipeMapper";
+import { mapBlogPostsToRecipes } from "../utils/blogToRecipeMapper.js";
 
 export default function MinumanPage({ onRecipeClick }) {
   const [searchQuery, setSearchQuery] = useState("");

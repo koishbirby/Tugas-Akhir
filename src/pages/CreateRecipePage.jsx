@@ -249,7 +249,7 @@ export default function CreateRecipePage({ onBack, onSuccess }) {
               </div>
 
               <div>
-                <label class  Name="block text-sm font-medium text-slate-700 mb-2">
+                <label className="block text-sm font-medium text-slate-700 mb-2">
                   Kategori
                 </label>
                 <select
