@@ -23,11 +23,11 @@ const STORAGE_FOLDER_PREFIX = (id) => `recipes/${id}/`;
  * Allowed reactions and small emoji mapping for UI
  */
 const REACTIONS = [
-  { id: "like", label: "Like", icon: ThumbsUp },
-  { id: "love", label: "Love", icon: Heart },
-  { id: "funny", label: "Funny", icon: Laugh },
-  { id: "wow", label: "Wow", icon: Sparkles },
-  { id: "skull", label: "Skull", icon: Skull },
+  { key: "like", label: "Like", emoji: "👍" },
+  { key: "love", label: "Love", emoji: "❤️" },
+  { key: "wow", label: "Wow", emoji: "😲" },
+  { key: "funny", label: "Funny", emoji: "😂" },
+  { key: "angry", label: "Angry", emoji: "😡" },
 ];
 
 export default function RecipeDetail({ recipeId, onBack, onEdit }) {
