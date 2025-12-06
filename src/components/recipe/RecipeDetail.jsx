@@ -1,5 +1,5 @@
 // src/components/recipe/RecipeDetail.jsx
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from "../../config/supabaseClient";
 import {
   ArrowLeft,
@@ -59,12 +59,12 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
 
   // reaction state
   const [postCounts, setPostCounts] = useState({}); // { '👍': 3, '❤️': 1, ... }
-  const [imageCounts, setImageCounts] = useState({}); // { imageUrl: { '👍': 2, ... } }
-  const [anonPostReaction, setAnonPostReaction] = useState(null); // the anon_id's reaction for this post
-  const [anonImageReactions, setAnonImageReactions] = useState({}); // { imageUrl: '👍' }
+  // now allow multiple reactions per anon: store array of reaction types this anon has for the post
+  const [anonPostReaction, setAnonPostReaction] = useState([]); // e.g. ['👍','❤️']
 
-  // persistent anon id for this browser
-  const anonId = getOrCreateAnonId();
+  // persistent anon id for this browser (useRef so it doesn't regenerate each render)
+  const anonIdRef = useRef(getOrCreateAnonId());
+  const anonId = anonIdRef.current;
 
   // -------------------------
   // Load post & images & reactions
@@ -97,7 +97,7 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
       setImages(resolvedImages);
 
       // load reaction counts + the anon's own reactions
-      await loadReactions(resolvedImages, anonId);
+      await loadReactions(anonId);
     } catch (err) {
       console.error("Error loading post:", err);
       setError(err?.message || "Gagal memuat post");
@@ -119,18 +119,16 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
       }
 
       // try a few candidate paths
-      const candidates = [
-        item,
-        STORAGE_FOLDER_PREFIX(recipeId) + item,
-        item.replace(/^\/+/, ""),
-      ];
+      const candidates = [item, STORAGE_FOLDER_PREFIX(recipeId) + item, item.replace(/^\/+/, "")];
 
       let found = null;
       for (const path of candidates) {
         try {
           const { data } = supabase.storage.from(BUCKET_NAME).getPublicUrl(path);
-          if (data?.publicUrl) {
-            found = data.publicUrl;
+          // older/newer supabase libs differ in field name; handle both
+          const publicUrl = data?.publicUrl ?? data?.publicURL ?? null;
+          if (publicUrl) {
+            found = publicUrl;
             break;
           }
         } catch (_) {}
@@ -150,7 +148,8 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
         .map((f) => {
           const path = folder + f.name;
           const { data: getUrlData } = supabase.storage.from(BUCKET_NAME).getPublicUrl(path);
-          return getUrlData?.publicUrl || null;
+          const publicUrl = getUrlData?.publicUrl ?? getUrlData?.publicURL ?? null;
+          return publicUrl || null;
         })
         .filter(Boolean);
     } catch (err) {
@@ -162,12 +161,12 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
   // -------------------------
   // Reactions: load counts and anon's own reactions
   // -------------------------
-  async function loadReactions(resolvedImages = [], _anonId = anonId) {
+  async function loadReactions(_anonId = anonId) {
     try {
-      // POST reaction rows for this post
+      // fetch all reactions for this post (include id so we can delete if needed)
       const { data: postRows, error: postErr } = await supabase
         .from("reactions")
-        .select("reaction_type, anon_id")
+        .select("id, reaction_type, anon_id")
         .eq("post_id", recipeId);
 
       if (postErr) {
@@ -181,56 +180,30 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
       });
       setPostCounts(postGrouped);
 
-      // determine this anon's reaction for the post (if any)
-      const myPostRow = (postRows || []).find((r) => r.anon_id === _anonId);
-      setAnonPostReaction(myPostRow ? myPostRow.reaction_type : null);
-
-      // IMAGE reaction rows for images
-      const imageGrouped = {};
-      const myImageMap = {};
-      if (Array.isArray(resolvedImages) && resolvedImages.length > 0) {
-        // fetch all reactions for these image URLs
-        const { data: imgRows, error: imgErr } = await supabase
-          .from("reactions")
-          .select("reaction_type, image_url, anon_id")
-          .in("image_url", resolvedImages);
-
-        if (imgErr) {
-          console.warn("image reactions fetch warning:", imgErr);
-        } else if (Array.isArray(imgRows)) {
-          imgRows.forEach((r) => {
-            if (!imageGrouped[r.image_url]) imageGrouped[r.image_url] = {};
-            imageGrouped[r.image_url][r.reaction_type] =
-              (imageGrouped[r.image_url][r.reaction_type] || 0) + 1;
-
-            if (r.anon_id === _anonId) {
-              myImageMap[r.image_url] = r.reaction_type;
-            }
-          });
-        }
-      }
-
-      setImageCounts(imageGrouped);
-      setAnonImageReactions(myImageMap);
+      // determine this anon's reactions for the post (array)
+      const myRows = (postRows || []).filter((r) => r.anon_id === _anonId);
+      const myTypes = myRows.map((r) => r.reaction_type);
+      setAnonPostReaction(myTypes);
     } catch (err) {
       console.error("Error loading reactions:", err);
     }
   }
 
   // -------------------------
-  // Reactions: mutations for anonymous user (one reaction per anon_id per item)
-  // - If anon already reacted with same emoji -> remove (toggle off)
-  // - If anon already reacted with different emoji -> update
-  // - Else -> insert
+  // Reactions: mutations for anonymous user (allow multiple reactions per anon on a post)
+  // Behavior:
+  // - If anon already reacted with THIS emoji -> remove that reaction (toggle off)
+  // - Else -> insert a new row for that emoji
   // -------------------------
   async function handleReactPost(reactionType) {
     try {
-      // find existing reaction by this anon for this post (if any)
-      const { data: existingRows, error: existingErr } = await supabase
+      // check if this anon already has a row for this post + reactionType
+      const { data: existingRow, error: existingErr } = await supabase
         .from("reactions")
-        .select("id, reaction_type")
+        .select("id")
         .eq("post_id", recipeId)
         .eq("anon_id", anonId)
+        .eq("reaction_type", reactionType)
         .limit(1)
         .maybeSingle();
 
@@ -238,21 +211,12 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
         console.warn("check existing post reaction err:", existingErr);
       }
 
-      const existing = existingRows || null;
-
-      if (existing && existing.reaction_type === reactionType) {
-        // remove
-        const { error: delErr } = await supabase.from("reactions").delete().eq("id", existing.id);
+      if (existingRow) {
+        // remove the existing specific emoji reaction
+        const { error: delErr } = await supabase.from("reactions").delete().eq("id", existingRow.id);
         if (delErr) throw delErr;
-      } else if (existing) {
-        // update
-        const { error: updErr } = await supabase
-          .from("reactions")
-          .update({ reaction_type: reactionType })
-          .eq("id", existing.id);
-        if (updErr) throw updErr;
       } else {
-        // insert new
+        // insert new reaction row (post-level)
         const { error: insErr } = await supabase.from("reactions").insert({
           post_id: recipeId,
           reaction_type: reactionType,
@@ -262,57 +226,11 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
         if (insErr) throw insErr;
       }
 
-      // reload counts & own reaction
-      await loadReactions(images, anonId);
+      // reload counts & own reactions
+      await loadReactions(anonId);
     } catch (err) {
       console.error("React post error:", err);
       alert("Gagal menambahkan reaksi (post).");
-    }
-  }
-
-  async function handleReactImage(imageUrl, reactionType) {
-    try {
-      // find existing reaction by this anon for this image (if any)
-      const { data: existingRows, error: existingErr } = await supabase
-        .from("reactions")
-        .select("id, reaction_type")
-        .eq("image_url", imageUrl)
-        .eq("anon_id", anonId)
-        .limit(1)
-        .maybeSingle();
-
-      if (existingErr) {
-        console.warn("check existing image reaction err:", existingErr);
-      }
-
-      const existing = existingRows || null;
-
-      if (existing && existing.reaction_type === reactionType) {
-        // remove
-        const { error: delErr } = await supabase.from("reactions").delete().eq("id", existing.id);
-        if (delErr) throw delErr;
-      } else if (existing) {
-        // update
-        const { error: updErr } = await supabase
-          .from("reactions")
-          .update({ reaction_type: reactionType })
-          .eq("id", existing.id);
-        if (updErr) throw updErr;
-      } else {
-        // insert new
-        const { error: insErr } = await supabase.from("reactions").insert({
-          image_url: imageUrl,
-          reaction_type: reactionType,
-          anon_id: anonId,
-          post_id: null,
-        });
-        if (insErr) throw insErr;
-      }
-
-      await loadReactions(images, anonId);
-    } catch (err) {
-      console.error("React image error:", err);
-      alert("Gagal menambahkan reaksi (gambar).");
     }
   }
 
@@ -409,7 +327,7 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
       <div className="flex flex-wrap gap-3 mb-6">
         {REACTION_OPTIONS.map((emoji) => {
           const count = postCounts[emoji] || 0;
-          const active = anonPostReaction === emoji;
+          const active = Array.isArray(anonPostReaction) && anonPostReaction.includes(emoji);
           return (
             <button
               key={emoji}
@@ -422,15 +340,13 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
           );
         })}
       </div>
-        {/* smth */}
+
       {/* Gallery */}
       {images.length > 0 ? (
         <div className="mt-6">
           <h2 className="text-2xl font-semibold mb-4">Gallery</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {images.map((src, idx) => {
-              const counts = imageCounts[src] || {};
-              const myReaction = anonImageReactions[src] || null;
               return (
                 <div key={src} className="relative group">
                   <button
@@ -440,29 +356,6 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
                   >
                     <img src={src} alt={`Image ${idx + 1}`} className="w-full h-48 object-cover rounded-xl" />
                   </button>
-
-                  <div className="mt-2 flex gap-2">
-                    {REACTION_OPTIONS.slice(0, 3).map((emoji) => {
-                      const active = myReaction === emoji;
-                      const c = counts[emoji] || 0;
-                      return (
-                        <button
-                          key={emoji}
-                          onClick={() => handleReactImage(src, emoji)}
-                          className={`flex items-center gap-2 px-2 py-1 rounded-full text-sm ${active ? "bg-blue-600 text-white" : "bg-white/90 text-slate-700"} border`}
-                        >
-                          <span>{emoji}</span>
-                          <span className="text-xs">{c}</span>
-                        </button>
-                      );
-                    })}
-                    {/* summary for more reactions */}
-                    {Object.keys(counts).length > 3 && (
-                      <div className="ml-1 px-2 py-1 rounded-full bg-white/90 text-xs border">
-                        +{Object.values(counts).reduce((a, b) => a + b, 0) - ((counts[REACTION_OPTIONS[0]] || 0) + (counts[REACTION_OPTIONS[1]] || 0) + (counts[REACTION_OPTIONS[2]] || 0))}
-                      </div>
-                    )}
-                  </div>
                 </div>
               );
             })}
