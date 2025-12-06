@@ -270,11 +270,6 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
   // REACTIONS: MUTATIONS (post)
   // -------------------------
   async function handleReactPost(reactionType) {
-    const user = await getCurrentUser();
-    if (!user) {
-      return alert("Anda harus login untuk bereaksi.");
-    }
-
     try {
       // Check current reaction by this user for this post
       const { data: existing } = await supabase
