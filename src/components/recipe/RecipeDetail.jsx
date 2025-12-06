@@ -11,6 +11,31 @@ import {
 import ConfirmModal from "../modals/ConfirmModal";
 import FavoriteButton from "../common/FavoriteButton";
 
+async function loadRecipeImages(recipeId) {
+  const BUCKET = "recipe_images"; // <-- change if needed
+  const FOLDER = `recipes/${recipeId}/`;
+
+  // list all files in folder
+  const { data, error } = await supabase.storage
+    .from(BUCKET)
+    .list(FOLDER, {
+      limit: 50,
+      offset: 0,
+    });
+
+  if (error) {
+    console.error("Image list error:", error);
+    return [];
+  }
+
+  // Convert to public URLs
+  return data.map((file) => {
+    return supabase.storage
+      .from(BUCKET)
+      .getPublicUrl(FOLDER + file.name).data.publicUrl;
+  });
+}
+
 export default function RecipeDetail({
   recipeId,
   onBack,
@@ -116,6 +141,7 @@ export default function RecipeDetail({
     );
   }
 
+
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
       {/* Back Button */}
@@ -139,6 +165,7 @@ export default function RecipeDetail({
           isFavorited={isFavorited}
           onClick={() => setIsFavorited(!isFavorited)}
         />
+
         {onEdit && (
           <button
             onClick={onEdit}
@@ -148,6 +175,7 @@ export default function RecipeDetail({
             Edit
           </button>
         )}
+
         <button
           onClick={() => setShowDeleteModal(true)}
           className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
@@ -166,6 +194,30 @@ export default function RecipeDetail({
           />
         )}
       </div>
+
+      {/* =============================
+          IMAGE GALLERY
+         ============================= */}
+      {images.length > 0 && (
+        <div className="mt-10">
+          <h2 className="text-2xl font-semibold mb-4">Gallery</h2>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {images.map((img, idx) => (
+              <div
+                key={idx}
+                className="overflow-hidden rounded-xl border border-slate-200 hover:scale-[1.02] transition-transform"
+              >
+                <img
+                  src={img}
+                  alt={`Recipe image ${idx + 1}`}
+                  className="w-full h-48 object-cover"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
