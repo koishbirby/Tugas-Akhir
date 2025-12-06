@@ -328,23 +328,30 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
         {REACTION_OPTIONS.map((emoji) => {
           const count = postCounts[emoji] || 0;
           const active = Array.isArray(anonPostReaction) && anonPostReaction.includes(emoji);
+
           return (
             <button
               key={emoji}
               onClick={() => handleReactPost(emoji)}
-              className={`gap-1 h-8 p-1 rounded-md transition cursor-pointer flex items-center ${
+              // parent controls background + main text color
+              className={`flex items-center gap-2 px-3 py-1 rounded-lg border transition-colors duration-150 ${
                 active
-                  ? "bg-blue-500 text-white"
-                  : "bg-gray-200 text-gray-600"
+                  ? "bg-blue-600 text-white border-blue-600"
+                  : "bg-white text-slate-700 border-slate-200"
               }`}
-
             >
-              <span className="text-lg">{emoji}</span>
-              <span className="text-xs text-slate-500">× {count}</span>
+              {/* emoji (no hardcoded color) */}
+              <span className="text-lg leading-none">{emoji}</span>
+
+              {/* count: CONDITIONAL color so it becomes white when active */}
+              <span className={`text-xs leading-none ${active ? "text-white/90" : "text-slate-500"}`}>
+                × {count}
+              </span>
             </button>
           );
         })}
       </div>
+
 
       {/* Gallery */}
       {images.length > 0 ? (
