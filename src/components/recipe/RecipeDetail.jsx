@@ -332,7 +332,12 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
             <button
               key={emoji}
               onClick={() => handleReactPost(emoji)}
-              className={`flex items-center gap-2 px-3 py-1 rounded-lg border ${active ? "bg-blue-600 text-white border-blue-600" : "bg-white text-slate-700"}`}
+              className={`gap-1 h-8 p-1 rounded-md transition cursor-pointer flex items-center ${
+                active
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-200 text-gray-600"
+              }`}
+
             >
               <span className="text-lg">{emoji}</span>
               <span className="text-xs text-slate-500">× {count}</span>
