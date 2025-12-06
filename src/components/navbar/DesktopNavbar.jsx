@@ -20,7 +20,7 @@ export default function DesktopNavbar({ currentPage, onNavigate, onCreateRecipe 
             <div className="relative group">
               <img
                 src={logoUrl}
-                alt="Resep Nusantara Logo"
+                alt="Haunter's Services Logo"
                 className="w-12 h-12 object-contain filter drop-shadow-md transform transition-transform duration-300 group-hover:scale-110"
               />
               {/* Decorative particles */}
